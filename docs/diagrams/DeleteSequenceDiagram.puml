@@ -5,8 +5,8 @@ skinparam ArrowFontStyle plain
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":PharmHubParser" as PharmHubParser LOGIC_COLOR
-participant ":DeleteCommandParser" as DeleteCommandParser LOGIC_COLOR
-participant "d:DeleteCommand" as DeleteCommand LOGIC_COLOR
+participant ":DeletePersonCommandParser" as DeletePersonCommandParser LOGIC_COLOR
+participant "d:DeletePersonCommand" as DeletePersonCommand LOGIC_COLOR
 participant ":CommandResult" as CommandResult LOGIC_COLOR
 end box
 
@@ -14,56 +14,56 @@ box Model MODEL_COLOR_T1
 participant ":Model" as Model MODEL_COLOR
 end box
 
-[-> LogicManager : execute("delete 1")
+[-> LogicManager : execute("deletep 1")
 activate LogicManager
 
-LogicManager -> PharmHubParser : parseCommand("delete 1")
+LogicManager -> PharmHubParser : parseCommand("deletep 1")
 activate PharmHubParser
 
-create DeleteCommandParser
-PharmHubParser -> DeleteCommandParser
-activate DeleteCommandParser
+create DeletePersonCommandParser
+PharmHubParser -> DeletePersonCommandParser
+activate DeletePersonCommandParser
 
-DeleteCommandParser --> PharmHubParser
-deactivate DeleteCommandParser
+DeletePersonCommandParser --> PharmHubParser
+deactivate DeletePersonCommandParser
 
-PharmHubParser -> DeleteCommandParser : parse("1")
-activate DeleteCommandParser
+PharmHubParser -> DeletePersonCommandParser : parse("1")
+activate DeletePersonCommandParser
 
-create DeleteCommand
-DeleteCommandParser -> DeleteCommand
-activate DeleteCommand
+create DeletePersonCommand
+DeletePersonCommandParser -> DeletePersonCommand
+activate DeletePersonCommand
 
-DeleteCommand --> DeleteCommandParser : d
-deactivate DeleteCommand
+DeletePersonCommand --> DeletePersonCommandParser : d
+deactivate DeletePersonCommand
 
-DeleteCommandParser --> PharmHubParser : d
-deactivate DeleteCommandParser
+DeletePersonCommandParser --> PharmHubParser : d
+deactivate DeletePersonCommandParser
 'Hidden arrow to position the destroy marker below the end of the activation bar.
-DeleteCommandParser -[hidden]-> PharmHubParser
-destroy DeleteCommandParser
+DeletePersonCommandParser -[hidden]-> PharmHubParser
+destroy DeletePersonCommandParser
 
 PharmHubParser --> LogicManager : d
 deactivate PharmHubParser
 
-LogicManager -> DeleteCommand : execute()
-activate DeleteCommand
+LogicManager -> DeletePersonCommand : execute()
+activate DeletePersonCommand
 
-DeleteCommand -> Model : deletePerson(1)
+DeletePersonCommand -> Model : deletePerson(1)
 activate Model
 
-Model --> DeleteCommand
+Model --> DeletePersonCommand
 deactivate Model
 
 create CommandResult
-DeleteCommand -> CommandResult
+DeletePersonCommand -> CommandResult
 activate CommandResult
 
-CommandResult --> DeleteCommand
+CommandResult --> DeletePersonCommand
 deactivate CommandResult
 
-DeleteCommand --> LogicManager : result
-deactivate DeleteCommand
+DeletePersonCommand --> LogicManager : result
+deactivate DeletePersonCommand
 
 [<--LogicManager
 deactivate LogicManager

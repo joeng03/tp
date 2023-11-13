@@ -12,7 +12,7 @@ import seedu.pharmhub.model.order.Status;
 import seedu.pharmhub.model.order.exceptions.InvalidStatusException;
 
 /**
- * Parses input arguments and creates a new EditCommand object
+ * Parses input arguments and creates a new UpdateStatusCommand object
  */
 public class UpdateStatusCommandParser implements Parser<UpdateStatusCommand> {
 

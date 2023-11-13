@@ -16,7 +16,7 @@ import seedu.pharmhub.model.order.Order;
 import seedu.pharmhub.model.order.Status;
 
 /**
- * Finds and lists all persons in PharmHub whose name contains any of the argument keywords.
+ * Finds and lists all orders in address book whose name contains any of the argument keywords.
  * Keyword matching is case insensitive.
  */
 public class FindOrderCommand extends Command {
@@ -36,7 +36,7 @@ public class FindOrderCommand extends Command {
     /**
      * Constructor method for the find order class.
      * @param statusToFind The status to find.
-     * @param medicineToFind The Medicine to find.
+     * @param medicineToFind The Medicine(s) to find.
      */
     public FindOrderCommand(Status statusToFind, Set<Medicine> medicineToFind) {
         this.statusToFind = statusToFind;

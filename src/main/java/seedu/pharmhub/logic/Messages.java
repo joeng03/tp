@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import seedu.pharmhub.commons.util.StringUtil;
 import seedu.pharmhub.logic.parser.Prefix;
 import seedu.pharmhub.model.medicine.Medicine;
 import seedu.pharmhub.model.order.Order;
@@ -75,29 +74,6 @@ public class Messages {
         return medicine.getMedicineName().toString();
     }
 
-    /**
-     * Formats the {@code person} for display to the user.
-     */
-    public static String formatOrder(Order order) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(order.getOrderNumber())
-                .append("; Person Name: ")
-                .append(order.getPerson().getName())
-                .append("; Medicines: ")
-                .append(StringUtil.setToStr(order.getMedicines()))
-                .append("; Status: ")
-                .append(order.getStatus());
-        return builder.toString();
-    }
-    /**
-     * Formats the {@code person} for display to the user.
-     */
-    public static String formatStatus(Order order) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(" Order Number: " + order.getOrderNumber())
-                .append("; Updated to Status: ")
-                .append(order.getStatus());
-        return builder.toString();
-    }
+
 
 }

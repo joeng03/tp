@@ -57,7 +57,8 @@ public class Medicine {
     }
 
     /**
-     * Returns true if both medicines have the same medicine name.
+     * Returns true if both medicines have the same medicine name or shortform
+     * of one equals the medicine name of the other.
      * This defines a weaker notion of equality between two medicines.
      */
     public boolean isSameMedicine(Medicine m) {
@@ -67,9 +68,9 @@ public class Medicine {
         if (m == null) {
             return false;
         }
-        return (medicineName.toLowerCase().equals(m.medicineName.toLowerCase())
-                || medicineName.toLowerCase().equals(m.shortForm.toLowerCase())
-                || m.shortForm.toLowerCase().equals(medicineName.toLowerCase()));
+        return (medicineName.equalsIgnoreCase(m.medicineName)
+                || medicineName.equalsIgnoreCase(m.shortForm)
+                || m.medicineName.equalsIgnoreCase(shortForm));
     }
 
     /**

@@ -1,0 +1,138 @@
+@startuml
+!include style.puml
+
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":PharmHubParser" as PharmHubParser LOGIC_COLOR
+participant ":EditPersonCommandParser" as EditPersonCommandParser LOGIC_COLOR
+participant ":ParserUtil" as ParserUtil LOGIC_COLOR
+participant ":EditPersonCommand" as EditPersonCommand LOGIC_COLOR
+participant ":EditPersonDescriptor" as EditPersonDescriptor LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+participant "e:CommandException" as CommandException LOGIC_COLOR
+
+end box
+
+box Model MODEL_COLOR_T1
+participant "model:Model" as Model MODEL_COLOR
+participant "p:Person" as Person1 MODEL_COLOR
+
+end box
+
+[--> LogicManager : execute("editp 1 no/Aspirin")
+activate LogicManager
+
+LogicManager -> PharmHubParser : parseCommand("editp 1 no/Aspirin")
+activate PharmHubParser
+
+create EditPersonCommandParser
+PharmHubParser -> EditPersonCommandParser
+activate EditPersonCommandParser
+
+
+EditPersonCommandParser -> ParserUtil : ParserUtil.parseAllergies([ ["Aspirin"] ])
+activate ParserUtil
+
+
+
+ParserUtil -> EditPersonCommandParser : a
+deactivate ParserUtil
+
+
+
+
+EditPersonCommandParser --> PharmHubParser
+deactivate EditPersonCommandParser
+
+PharmHubParser -> EditPersonCommandParser : parse("1 no/Aspirin")
+activate EditPersonCommandParser
+
+create EditPersonDescriptor
+EditPersonCommandParser -> EditPersonDescriptor : new EditPersonDescriptor("pan")
+activate EditPersonDescriptor
+
+EditPersonDescriptor --> EditPersonCommandParser : editPersonDescriptor
+deactivate EditPersonDescriptor
+
+create EditPersonCommand
+EditPersonCommandParser -> EditPersonCommand : new EditPersonCommand(1, editPersonDescriptor, ignoreAllergies)
+activate EditPersonCommand
+
+EditPersonCommand --> EditPersonCommandParser : cmd
+deactivate EditPersonCommand
+
+EditPersonCommandParser --> PharmHubParser : cmd
+deactivate EditPersonCommandParser
+
+PharmHubParser --> LogicManager : cmd
+deactivate PharmHubParser
+destroy EditPersonCommandParser
+
+LogicManager -> EditPersonCommand : execute()
+activate EditPersonCommand
+
+'
+'create Person3
+'EditPersonCommand -> Person3 : new Person(editedPerson.getName(), editedPerson.getPhone(), editedPerson.getEmail(), editedPerson.getAddress(), editedPerson.getTags(), convertedAllergies, editedPerson.getOrders())
+'activate Person3
+'Person3 --> EditPersonCommand : newPerson
+'deactivate Person3
+'
+'create Person3
+'EditPersonCommand -> Person3 : new Person(editedPerson.getName(), editedPerson.getPhone(), editedPerson.getEmail(), editedPerson.getAddress(), editedPerson.getTags(), convertedAllergies, editedPerson.getOrders())
+'activate Person3
+'Person3 --> EditPersonCommand : newPerson
+'deactivate Person3
+
+
+
+create Person1
+EditPersonCommand -> Person1 : new Person(n, p, e, a, t, no, o)
+activate Person1
+Person1 --> EditPersonCommand : newPerson
+deactivate Person1
+
+opt !ignoreAllergyOrderConflicts
+EditPersonCommand -> Person1 : hasOrderConflicts()
+activate Person1
+
+Person1--> EditPersonCommand : c
+deactivate Person1
+
+
+opt c
+
+create CommandException
+EditPersonCommand -> CommandException : new CommandException(MESSAGE_CONFLICTING_ORDERS)
+activate CommandException
+CommandException --> EditPersonCommand : e
+deactivate CommandException
+EditPersonCommand --> LogicManager: [exception]
+
+
+end
+end
+
+EditPersonCommand -> Model: updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+activate Model
+Model --> EditPersonCommand
+deactivate Model
+
+
+create CommandResult
+EditPersonCommand -> CommandResult
+activate CommandResult
+CommandResult --> EditPersonCommand
+deactivate CommandResult
+
+EditPersonCommand --> LogicManager : result
+deactivate EditPersonCommand
+EditPersonCommand -[hidden]-> LogicManager : result
+destroy EditPersonCommand
+
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

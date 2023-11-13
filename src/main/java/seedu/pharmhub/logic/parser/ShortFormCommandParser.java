@@ -11,13 +11,13 @@ import seedu.pharmhub.logic.parser.exceptions.ParseException;
 import seedu.pharmhub.model.medicine.Medicine;
 
 /**
- * Parses input arguments and creates a new AddShortFormCommand object
+ * Parses input arguments and creates a new ShortFormCommand object
  */
 public class ShortFormCommandParser implements Parser<ShortFormCommand> {
 
     /**
-     * Parses the given {@code String} of arguments in the context of the AddShortFormCommand
-     * and returns an AddShortFormCommand object for execution.
+     * Parses the given {@code String} of arguments in the context of the ShortFormCommand
+     * and returns an ShortFormCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
     public ShortFormCommand parse(String args) throws ParseException {

@@ -25,7 +25,7 @@ import seedu.pharmhub.model.person.Person;
 
 
 /**
- * Edits the details of an existing person in the PharmHub.
+ * Edits the details of a status of an existing order in PharmHub.
  */
 public class UpdateStatusCommand extends Command {
 
@@ -147,7 +147,7 @@ public class UpdateStatusCommand extends Command {
 
         /**
          * Copy constructor.
-         * A defensive copy of {@code tags} is used internally.
+         * A defensive copy of {@code medicines} is used internally.
          */
         public EditOrderDescriptor(EditOrderDescriptor toCopy) {
             setOrderNumber(toCopy.orderNumber);

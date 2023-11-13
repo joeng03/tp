@@ -14,11 +14,8 @@ if () then ([d/ flag present])
     else ([else])
     endif
 else ([else])
-    if () then (index is valid)
-            if () then (short form is valid)
-                        : Add short form;
-            else ([else])
-            endif
+    if () then (index and short form is valid)
+    : Add short form;
     else ([else])
     endif
 endif

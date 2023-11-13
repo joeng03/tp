@@ -166,7 +166,7 @@ public class ParserUtil {
     }
 
     /**
-     * Parses {@code Collection<String> medicines} into a {@code Set<String> medicines}.
+     * Parses {@code Collection<String> medicines} into a {@code Set<Medicine>}.
      */
     public static Set<Medicine> parseMedicines(Collection<String> medicines) throws ParseException {
         requireNonNull(medicines);
@@ -176,21 +176,10 @@ public class ParserUtil {
         }
         return medicineSet;
     }
-    /**
-     * Parses {@code Collection<String> medicines} into a {@code Set<String> medicines}.
-     */
-    public static Medicine parseMedicine(String medicine) throws ParseException {
-        requireNonNull(medicine);
-        String trimmedMedicineName = medicine.trim();
-        if (!Medicine.isValidMedicineName(trimmedMedicineName)) {
-            throw new ParseException(Medicine.MESSAGE_MEDICINE_NAME_CONSTRAINTS);
-        }
-        return new Medicine(trimmedMedicineName);
-    }
 
 
     /**
-     * Parses a {@code Status status} into a {@code Status}.
+     * Parses a {@code String status} into a {@code Status}.
      * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the given {@code status} is invalid.

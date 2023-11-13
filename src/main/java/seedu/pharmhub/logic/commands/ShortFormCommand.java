@@ -16,7 +16,7 @@ import seedu.pharmhub.model.medicine.Medicine;
 
 
 /**
- * A class which represents the adding of a short form to a medicine.
+ * A class which represents the adding and deleting of a short form to a medicine.
  */
 public class ShortFormCommand extends Command {
     public static final String COMMAND_WORD = "sfm";
@@ -41,7 +41,7 @@ public class ShortFormCommand extends Command {
     private final Medicine medicine;
 
     /**
-     * Creates an AddShortFormCommand
+     * Creates an ShortFormCommand
      */
     public ShortFormCommand(Index index, Medicine medicine) {
         requireNonNull(index);
@@ -51,7 +51,7 @@ public class ShortFormCommand extends Command {
     }
 
     /**
-     * Creates an AddShortForm Command
+     * Creates an ShortForm Command
      */
     public ShortFormCommand(Index index) {
         requireNonNull(index);

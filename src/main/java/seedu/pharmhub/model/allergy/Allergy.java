@@ -6,7 +6,7 @@ import seedu.pharmhub.model.medicine.Medicine;
 
 
 /**
- * Represents a Allergy of a patient.
+ * Represents an Allergy of a patient.
  * Guarantees: immutable; name is valid as declared in {@link #isValidAllergyName(String)}
  */
 public class Allergy {
@@ -66,16 +66,16 @@ public class Allergy {
     }
 
     /**
-     * Format state as text for viewing.
+     * Format allergy as text for viewing.
      */
     public String toString() {
         return '[' + allergy.getMedicineName() + ']';
     }
 
     /**
-     * Retruns a copy of the allergic medicine.
+     * Returns a copy of the allergic medicine.
      */
-    public Medicine getAllery() {
+    public Medicine getAllergy() {
         return new Medicine(allergy.getMedicineName(), allergy.getShortForm());
     }
 

@@ -99,7 +99,7 @@ public class EditPersonCommand extends Command {
         }
 
         Set<Medicine> allergyMedicines = new HashSet<>(editedPerson.getAllergies().stream()
-                .map(Allergy::getAllery).collect(Collectors.toList()));
+                .map(Allergy::getAllergy).collect(Collectors.toList()));
         Set<Medicine> convertedMedicines = CommandUtil.getModelMedicine(model, allergyMedicines);
 
         Set<Allergy> convertedAllergies = new HashSet<>(convertedMedicines.stream().map(Allergy::new)

@@ -6,29 +6,74 @@ title: User Guide
 
 --------------------------------------------------------------------------------------------------------------------
 
-***Where Precision Meets Prescription***
+**PharmHub – Where Precision Meets Prescription**
+<br><br>
+Are you a small remote pharmacist seeking to elevate precision and efficiency in your workplace?
+<br><br>
+Look no further, as PharmHub is here to answer your prayers.
+PharmHub is a powerful desktop application designed for the meticulous management of patients and their medication orders,
+while also always working behind the scenes ensuring every step taken does not have any errors.
+It's not just another GUI app; it's your optimized solution, with a focus on efficiency through a Command Line Interface (CLI) 
+complemented by the familiar benefits of a Graphical User Interface (GUI).
+Why PharmHub? If you're adept at typing, PharmHub empowers you to breeze through patient and order management tasks faster than ever before,
+outpacing traditional GUI applications.
 
-Pharmhub is a **desktop app for managing patients and their medication orders, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, PharmHub can get your patient/ order management tasks done faster than traditional GUI apps.
+Getting started is a breeze:
+
+* First, familiarize yourself with key [Definitions](#definition).
+* Next, familiarise with our GUI with our [Application Navigation](#application-navigation).
+* Then, dive into our hands-on [Quick Start](#quick-start) guide.
+* Explore the array of capabilities in our [Features](#features) section, where each command's functionality is unveiled.
+* For seasoned users, our [Command Summary](#command-summary) serves as your go-to resource, encompassing everything you need to master the application.
+* Refer to the [Table Of Content](#table-of-contents) for quick navigation and [Trouble Shooting](#trouble-shooting) for any issues faced.
+
+PharmHub isn't just software; it's your ally in precision pharmacy management. Let's embark on this journey together!
 
 --------------------------------------------------------------------------------------------------------------------
 ## Table of Contents
-1. [Using this Guide](#Using this guide)
-    1. [Person](#person)
-    2. [Order](#order)
-    3. [Status](#status)
-    4. [Medicine](#medicine)
-    5. [Index](#index)
-    6. [Fields](#fields)
+1. [Definition](#definition)
+   1. [Person](#person)
+   2. [Order](#order)
+   3. [Status](#status)
+   4. [Medicine](#medicine)
+   5. [Index](#index)
+   6. [Fields](#fields)
 2. [Application Navigation](#application-navigation)
 3. [Quick Start](#quick-start)
 4. [Features](#features)
+   1. [Help](#viewing-help--help)
+   2. [Person Related Commands](#person-related-commands)
+      1. [Add Person](#adding-a-person-addp)
+      2. [list Person](#listing-all-persons--listp)
+      3. [View Person](#viewing-a-person-viewp)
+      4. [Edit Person](#editing-a-person--editp)
+      5. [Delete Person](#deleting-a-person--deletep)
+   3. [Medicine Related Commands](#medicine-related-commands)
+       1. [Add Medicine](#adding-a-new-medicine--addm)
+       2. [list Medicine](#listing-all-medicines--listm)
+       3. [Find Medicine](#locating-a-medicine-by-name--findm-)
+       4. [Delete Medicine](#deleting-a-medicine--deletem)
+       5. [Add Short Form Medicine](#adding-and-deleting-short-form--sfm)
+   4. [Order Related Commands](#person-related-commands)
+       1. [list Order](#listing-all-orders--listo-)
+       2. [View Order](#viewing-an-order--viewo-)
+       3. [Add Order](#adding-a-new-order--addo-)
+       4. [Update Order Status](#updating-the-status-of-an-order--updates-)
+       5. [Find Order](#filteringfinding-order-by-status-and-medicines-findo)
+       6. [Delete Order](#deleting-an-order--deleteo-)
+   5. [Undo](#undoing-an-action--undo-)
+   6. [Redo](#redoing-an-action-after-an-undo--redo-)
+   7. [Clear](#clearing-all-entries--clear)
+   8. [Exit](#exiting-the-program--exit)
 5. [Command Summary](#command-summary)
-6. [FAQ](#faq)
+6. [Trouble Shooting](#trouble-shooting)
+   1. [FAQ](#faq)
+   2. [Common Errors](#common-errors)
 7. [Glossary](#glossary)
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Using this guide  
+## Definition
 This section provides an introduction to the terminology used in this user guide. 
 
 ### Person
@@ -43,6 +88,7 @@ A person has the following attributes:
 - Email Address
 - Address
 - Allergy(If the person has one. Can be one or more)
+- Tag(Optional for additional remarks/inputs for the person)
 
 A person is uniquely identified by their name. No two persons can have the same name and names are case-insensitive.
 
@@ -66,13 +112,13 @@ Status when added.
 Status is used to describe the process at which the order is at.
 Status can only be updated/modified following their chronological order.
 
-<span style="background-color: red; border-radius: 20%; padding: 1px;">PENDING/PD</span>
+<span style="background-color: red; border-radius: 20%; padding: 1px; color: white">PENDING/PD</span>
 ->
-<span style="background-color: blue; border-radius: 20%; padding: 1px;">PREPARING/PR</span>
+<span style="background-color: blue; border-radius: 20%; padding: 1px; color: white">PREPARING/PR</span>
 ->
-<span style="background-color: green; border-radius: 20%; padding: 1px;">COMPLETED/CP</span>
+<span style="background-color: green; border-radius: 20%; padding: 1px; color: white">COMPLETED/CP</span>
 ->
-<span style="background-color: black; border-radius: 20%; padding: 1px;">CANCELED/CC</span>
+<span style="background-color: black; border-radius: 20%; padding: 1px; color: white">CANCELED/CC</span>
 
 Status can be identified either in their full form or in their short form as shown above (FullForm/ShortForm). Status are all case-insensitive as well.
 
@@ -118,6 +164,7 @@ The following fields are used for commands:
 | Name          | n/     | Must only contain alphanumeric, space, dot, slash, <br/> hyphen and single quote characters. Case insensitive | `Roy s//o Balakrishnan`, `Connell O'Brien` |
 | Phone number  | p/     | Must be numeric and be at least 3 digits long                                                                 | `999`, `68741616`                          |
 | Email address | e/     | Must be a valid email address                                                                                 | `roy@gmail.com`, `Alex123@outlook.com`     |
+| Tags          | t/     | Optional for use                                                                                              | `Diabetic`, `Age 72`                       |
 | Address       | a/     | Must not be empty                                                                                             | `Sentosa cove`, `Pulau NTU`                |
 | Status        | s/     | Must be a valid Status (Refer to [Status](#status))                                                           | `PENDIND`, `Cc`                            |
 | Medicine      | m/     | Must not be empty and is not case sensitive.                                                                  | `metformin`, `panadol`                     |
@@ -153,6 +200,7 @@ Below shows a guide on how you can navigate around our interactive Graphical Use
 
 1. Ensure you have Java `11` or above installed in your Computer.
    * Run `java --version` in your command terminal to see the java version.
+   * For both `Mac` and `Window` user click [here](https://nus-cs2103-ay2324s1.github.io/website/admin/programmingLanguages.html) for a guide to download the required `java` language for your computer.
 
 2. Download the latest `PharmHub.jar` from [here](https://github.com/AY2324S1-CS2103T-W08-4/tp/releases).
 
@@ -170,13 +218,17 @@ Below shows a guide on how you can navigate around our interactive Graphical Use
    * `listo` : Lists all order.
    
    * `listm` : Lists all medicine.
-   
-   * `viewp 1` : views in detail index 1 of the person list.(The Displayed list does not have to be person to view person)
 
-   * `viewo 1` : views in detail index 1 of the order list.
+   * `addm m/ibuprofen`: Adds a medicine named `Ibuprofen` to PharmHub.
 
    * `addp n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a person named `John Doe` to PharmHub.
 
+   * `addo 1 m/ibuprofen o/123`: Adds an order with order number `123` for person indexed `1` to PharmHub.
+
+   * `viewp 1` : views in detail index 1 of the person list.(The Displayed list does not have to be person to view person)
+
+   * `viewo 1` : views in detail index 1 of the order list.
+   
    * `deletep 3` : Deletes the 3rd patient shown in the current list.
 
    * `clear` : Deletes all people.
@@ -219,6 +271,7 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
+### Person Related Commands
 
 ### Adding a person: `addp`
 
@@ -311,6 +364,10 @@ Examples:
 * `listp` followed by `deletep 2` deletes the 2nd person in PharmHub.
 * `findp n/Betsy` followed by `deletep 1` deletes the 1st person in the results of the `find` command.
 
+---
+
+### Medicine Related Commands
+
 ### Adding a new medicine : `addm`
 
 Adds a new medication into PharmHub.  
@@ -342,8 +399,9 @@ Format : `Format: findm KEYWORD [MORE_KEYWORD]…`
 * Medicines matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `ol en` will return `Panadol`, `Ibuprofen`
 
-> [!NOTE]  
-> Unlike `findp`, partial words will be matched e.g. `para` will  match `Paracetamol`
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** Unlike `findp`, partial words will be matched e.g. `para` will  match `Paracetamol`.
+
 
 Examples:
 * `findm ol`
@@ -415,7 +473,7 @@ Format: `updates INDEX s/STATUS`
 * Statuses can be updated by skipping the hierarchy. `Pending -> Cancelled`
 * Shorthands can be used in replacement of the full names of the statuses
 
-Example:
+Example: 
 * `updates 1 s/completed`
 * `updates 1 s/COMPLETED`
 * `updates 1 s/cp`
@@ -547,28 +605,72 @@ If your changes to the data file makes its format invalid, PharmHub will discard
 | **Help**                  | `help`                                                                                                                                                                                          |
 | **Exit**                  | `exit`                                                                                                                                                                                          |
 
+---
 
-## FAQ
+## Trouble Shooting
 
-**Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous PharmHub home folder.
+### FAQ
 
---------------------------------------------------------------------------------------------------------------------
+**Q**: The application is not running on my computer.<br>
+**A**: Refer to our [Quick Start](#quick-start) to ensure that you downloaded the correct java version.
 
-## Known issues
+**Q**: Will I lose my data if i exit the application?<br>
+**A**: No you will not. The data is stored on your computer and as long as you don't delete the `.jar` file, your data will be stored.
+
+**Q**: I accidentally deleted the `PharmHub.jar` file can i get my data back?<br>
+**A**: Unfortunately, the data cannot be recovered once the `.jar` file is deleted so make sure to keep it at a secure location.
+
+**Q**: Is my patient data secure?<br>
+**A**: Yes, as long as your computer is secure no one else will be able to access the information.
+
+**Q**: Is internet connection required?<br>
+**A**: Nope, PharmHub do not require internet connection.
+
+Click [here](https://github.com/AY2324S1-CS2103T-W08-4/tp/issues) to view some issues posted by some of our users to see if it solves yours.
+<br>
+Click [here](https://github.com/AY2324S1-CS2103T-W08-4/tp/issues/new) to feedback on issues you faced that we didn't answer on.
+
+
+### Common Errors
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 
+2. Common Error messages
+
+   1. `Unknown Command` Error
+      <br>![UnknownCommand](images/errorMessage/UnknownCommand.png)
+      <br> Check [Command Summary](#command-summary) and make sure the input command is a valid commmand.
+      <br><br>
+   2. `Ivalid Command Format` Error
+      <br>![InvalidCommandFormat](images/errorMessage/InvalidCommandFormat.png)
+      <br> Either read the error message and edit accordingly or look at the command [Features](#features) for detailed explanation.
+      <br><br>
+   3. `Missing Field` Error
+      <br>![MissingField](images/errorMessage/MssingField.png)
+      <br> Check the command [feature](#features) to identify the missing input.
+      <br><br>
+   4. `Invalid Index` Error
+      <br>![InvalidIndex](images/errorMessage/InvalidIndex.png)
+      <br> Check through the display list and ensure a valid index is chosen. [Index](#index)
+      <br><br>
+   5. `Invalid Input` Error
+      <br>![InvalidInput](images/errorMessage/InvalidInput.png)
+      <br> Refer to the [fields](#fields) to ensure the validity of the input fields.
+      <br><br>
+   6. `Invalid Chronological Order` Error
+      <br> Ensure that the [status](#status) is of correct chronological order.
+      <br>![InvalidChronological](images/errorMessage/InvalidChronological.png)
+   
 --------------------------------------------------------------------------------------------------------------------
 
 ## Glossary
 
 | Term                 | Meaning                                                                                                               |
 |----------------------|-----------------------------------------------------------------------------------------------------------------------|
+| **CLI**              | Command Line Interface(CLI) is a text based interface where users can input commands.                                 |
 | **Command Terminal** | A program which allows users to enter commands that the computer processes.                                           |
 | **`cd`**             | The command used in command terminal to change directory.                                                             |
 | **Gui**              | Graphical User Interface(GUI) is the digital interface that the user interacts with.                                  |
 | **Java**             | Java is a widely used programming language and is used in PharmHub.                                                   |
 | **Jar**              | Java Archive contains all of the various components that make up a Java application, in this case PharmHub.           |
-| **Json**             | JavaScript Object Notation(Json) is a text format for storing data. It is used by PharmHub to store application data.
-|  
+| **Json**             | JavaScript Object Notation(Json) is a text format for storing data. It is used by PharmHub to store application data. |  

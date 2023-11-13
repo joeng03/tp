@@ -14,7 +14,7 @@ class JsonAdaptedAllergy {
     private final JsonAdaptedMedicine allergy;
 
     /**
-     * Constructs a {@code JsonAdaptedAllergy} with the given {@code allergyName}.
+     * Constructs a {@code JsonAdaptedAllergy} with the given {@code JsonAdaptedMedicine}.
      */
     @JsonCreator
     public JsonAdaptedAllergy(@JsonProperty("allergy") JsonAdaptedMedicine allergy) {

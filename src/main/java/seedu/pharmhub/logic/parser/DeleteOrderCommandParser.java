@@ -6,7 +6,7 @@ import seedu.pharmhub.logic.commands.DeleteOrderCommand;
 import seedu.pharmhub.logic.parser.exceptions.ParseException;
 
 /**
- * Parses input arguments and creates a new DeleteCommand object
+ * Parses input arguments and creates a new DeleteOrderCommand object
  */
 public class DeleteOrderCommandParser implements Parser<DeleteOrderCommand> {
 

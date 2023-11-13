@@ -1,0 +1,88 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ShortFormCommandParser" as ShortFormCommandParser LOGIC_COLOR
+participant "u:ShortFormCommand" as ShortFormCommand LOGIC_COLOR
+
+
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Medicine" as Medicine1 MODEL_COLOR
+participant ":Model" as Model MODEL_COLOR
+end box
+[--> LogicManager : execute("sfm 1 m/pan")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("sfm 1 m/pan")
+activate AddressBookParser
+
+create ShortFormCommandParser
+AddressBookParser -> ShortFormCommandParser
+activate ShortFormCommandParser
+ShortFormCommandParser --> AddressBookParser
+deactivate ShortFormCommandParser
+
+AddressBookParser -> ShortFormCommandParser : parse("1 m/pan")
+activate ShortFormCommandParser
+
+create Medicine1
+ShortFormCommandParser -> Medicine1 : new Medicine("pan")
+activate Medicine1
+
+Medicine1 --> ShortFormCommandParser
+deactivate Medicine1
+
+create ShortFormCommand
+ShortFormCommandParser -> ShortFormCommand : new ShortFormCommand(1, m)
+activate ShortFormCommand
+
+ShortFormCommand --> ShortFormCommandParser
+deactivate ShortFormCommand
+
+ShortFormCommandParser --> AddressBookParser : u
+deactivate ShortFormCommandParser
+
+AddressBookParser --> LogicManager : u
+deactivate AddressBookParser
+destroy ShortFormCommandParser
+
+LogicManager -> ShortFormCommand : execute()
+activate ShortFormCommand
+
+ShortFormCommand -> Model : hasMedicine(m)
+activate Model
+
+Model --> ShortFormCommand : b
+deactivate Model
+opt !b
+ShortFormCommand -> Model : getFilteredMedicineList()
+activate Model
+
+Model --> ShortFormCommand
+deactivate Model
+
+ShortFormCommand -> Model : setMedicine()
+activate Model
+
+Model --> ShortFormCommand
+deactivate Model
+
+end
+
+ShortFormCommand --> LogicManager : result
+deactivate ShortFormCommand
+ShortFormCommand -[hidden]-> LogicManager : result
+destroy Medicine1
+destroy ShortFormCommand
+
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
+
+

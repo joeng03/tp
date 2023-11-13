@@ -13,7 +13,7 @@ import seedu.pharmhub.model.person.Person;
 
 
 /**
- * Finds and displays the order with the specified order number.
+ * Finds and displays the person at the specified index.
  */
 public class ViewPersonCommand extends Command {
 

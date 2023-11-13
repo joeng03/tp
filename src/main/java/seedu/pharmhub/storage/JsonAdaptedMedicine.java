@@ -37,7 +37,7 @@ public class JsonAdaptedMedicine {
     /**
      * Converts this Jackson-friendly adapted medicine object into the model's {@code Medicine} object.
      *
-     * @throws IllegalValueException if there were any data constraints violated in the adapted medcine.
+     * @throws IllegalValueException if there were any data constraints violated in the adapted medicine.
      */
     public Medicine toModelType() throws IllegalValueException {
 

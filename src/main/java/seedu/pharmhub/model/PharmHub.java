@@ -172,7 +172,7 @@ public class PharmHub implements ReadOnlyPharmHub {
 
     /**
      * Retrieves the order with the specified order number
-     * @return Order with specified orderNumer
+     * @return Order with specified orderNumber
      */
     public Optional<Order> getOrder(String orderNumber) {
         return orders.getOrder(orderNumber);
@@ -212,8 +212,8 @@ public class PharmHub implements ReadOnlyPharmHub {
      * Removes {@code key} {@code PharmHub}.
      * {@code key} must exist in the PharmHub.
      */
-    public void removeMedicine(Medicine m) {
-        medicines.remove(m);
+    public void removeMedicine(Medicine key) {
+        medicines.remove(key);
     }
 
     /**

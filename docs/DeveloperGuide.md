@@ -13,6 +13,13 @@ title: Developer Guide
     5. [Storage](#storage-component)
     6. [Common Classes](#common-classes)
 4. [Implementation](#implementation)
+    1. [Listing](#listx)
+    2. [Viewing](#viewx-feature)
+    3. [Edit Person](#edit-person-feature)
+    4. [Add Medicine Short Form](#add-medicine-short-form-feature-)
+    5. [Delete Medicine Short Form](#delete-medicine-short-form-feature-)
+    6. [Adding an Order](#adding-an-order-feature)
+    7. [Finding an Order Feature](#finding-an-order-feature)
 5. [Documentation](#documentation-logging-testing-configuration-dev-ops)
 6. [Appendix: Requirements](#appendix-requirements)
     1. [Product scope](#product-scope)
@@ -113,17 +120,17 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("deletep 1")` API call as an example.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `deletep 1` Command](images/DeleteSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeletePersonCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
 </div>
 
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `PharmHubParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
+1. When `Logic` is called upon to execute a command, it is passed to an `PharmHubParser` object which in turn creates a parser that matches the command (e.g., `DeletePersonCommandParser`) and uses it to parse the command.
+1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeletePersonCommand`) which is executed by the `LogicManager`.
 1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
@@ -132,8 +139,8 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 <img src="images/ParserClasses.png" width="600"/>
 
 How the parsing works:
-* When called upon to parse a user command, the `PharmHubParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `PharmHubParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+* When called upon to parse a user command, the `PharmHubParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddPersonCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddPersonCommand`) which the `PharmHubParser` returns back as a `Command` object.
+* All `XYZCommandParser` classes (e.g., `AddOrderCommandParser`, `DeletePersonCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/AY2324S1-CS2103T-W08-4/tp/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -174,6 +181,137 @@ Classes used by multiple components are in the `seedu.pharmHub.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented. 
 
+### ListX feature
+
+The listing functionality is supported by the listPanelPlaceholder in the Ui.
+
+On start of application, two listPanels (PersonListPanel, OrderListPanel) are created, and person list panel is attached
+to the ListPanel Placeholder as default.
+
+On execution of the any listing commands (`listo` or `listp`), the resultant CommandResult contains details on which
+panel to choose to display.
+
+These are 3 different options for these details:
+* Person - Panel will display list of people
+* Order - Panel will display list of orders
+* NoChange - Panel will keep whatever was there previously
+
+Using these specifications, the CommandResult from executing `listo` and `listp` will inform the Ui of which
+panel to attach to the listPanelPlaceHolder
+
+### ViewX feature
+
+The `viewp/ viewo` feature allows users to view details of a person/ order in the info display panel. This is facilitated with the new interface, `InfoObject`, which classes that want to be displayed are required to implement.
+
+To support this feature, `CommandResult` has the field `InfoObject`. If present (not null), the UI will create and attach a view for that `InfoObject` onto the Info Display.
+
+The code excerpt for `MainWindow#handleDisplayInfo(InfoObject)` below shows how the InfoDisplay is rendered:
+
+```java
+    @FXML
+    protected void handleDisplayInfo(InfoObject objectToDisplay) {
+        assert(objectToDisplay instanceof Order || objectToDisplay instanceof Person);
+
+        if (objectToDisplay instanceof Order) {
+            Order order = (Order) objectToDisplay;
+            OrderDisplay orderDisplay = new OrderDisplay(order);
+            infoDisplay.attach(orderDisplay)
+        } else if (objectToDisplay instanceof Person) {
+            Person person = (Person) objectToDisplay;
+            PersonDisplay personDisplay = new PersonDisplay(person);
+            infoDisplay.attach(personDisplay)
+        } else {
+            throw new RuntimeException("Invalid object to display");
+        }
+    }
+```
+
+
+The following sequence diagram shows how the `viewp` operation works:
+
+![ViewpSequenceDiagram](images/ViewpSequenceDiagram.png)
+
+The following activity diagram summarizes what happens when a user executes a new command:
+
+<img src="images/ViewActivityDiagram.png" width="450" />
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** As it currently stands in PharmHub, InfoObject can only be a Person or an Order.
+
+</div>
+
+#### Design considerations:
+* **Aspect: How the UI is informed about the object to display:**
+
+    * **Alternative 1 (current choice):** Require Classes that want to be displayed to implement `InfoObject`
+        * Pros: Allows `CommandResult` to contain a uniform type (`InfoObject`), which scales easily. Also gives control over which classes can be displayed, and which classes cannot (yet).
+        * Cons: Empty `InfoObject` interface may lead to confusion for new developers.
+
+    * **Alternative 2:** Have `CommandResult` contain all types of objects that we want displayed, ie `Person` and `Order`
+        * Pros: Possibly clearer in intent
+        * Cons: Not easily scalable
+
+* **Aspect: Creation of relevant `InfoObject` UI component:**
+
+    * **Alternative 1 (current choice):** If-else checks in `MainWindow#handleDisplayInfo`, and create the required UI component for each clause
+        * Pros: Reduces coupling between `Person` (and `Order`) model and UI
+        * Cons: Less scalable
+
+    * **Alternative 2:** Create abstract method `InfoObject#createUIComponent`, and have Classes that wish to be displayed implement this method and create their own UI components
+        * Pros: Easily scalable - each class implements their own UI display to attach into the placeholder
+        * Cons: Increased coupling between UI and Model. UI-creation code exists inside the `Person` (or `Order`) Class
+
+### Edit person feature
+
+#### Implementation
+
+After adding a person in PharmHub, the user would be able to edit the person using the `editp` command with the following format:
+
+`editp INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] [no/ALLERGY]…​ [ia/]`
+
+The command edits the person information based on the given fields. At least one field must be updated.
+Existing values will be replaced with the new input values.
+If the edits cause the person to be allergic to any orders associated with them, a warning will be raised. Using the `ia/` flag will override this warning.
+This command cannot add or delete orders for this person. It's limited to editing the person's information only.
+
+Prerequisite: There should be a person at index 1, with "Aspirin" in the PharmHub medicine list and also among one or more of his/her orders.
+
+The following sequence diagram illustrates some of the steps that happen when user execute `editp 1 no/Aspirin`
+![editp](images/EditPersonSequenceDiagram.png)
+
+#### Steps to trigger
+
+Step 1: The user executes `editp 1 no/Aspirin` to add the allergy "Aspirin" to the person at index 1.
+
+Step 2: Logic Manager calls `PharmHubParser#parse` which extracts the arguments and calls `EditPersonCommandParser`. 
+
+Step 3: `EditPersonCommandParser` parses the index and the allergy and returns an `EditPersonCommand`.
+
+Step 4: `LogicManager` calls `EditPersonCommand#execute` to edit the details of the person.
+
+Step 5:  Since an allergy is added in this command, and an `ia/` flag is not passed as an argument, `EditPersonCommand` checks among the list of order of the person whether there are any medications that match this allergy by calling the `hasOrderConflict()` function.
+
+Step 6: Since there are medications that match this allergy, a `CommandException` is returned.
+
+Step 7: An error message is shown to warn the user that the person's new allergy conflicts with existing orders, and hints the user about adding the `ia/` flag to add the allergy to the person anyway.
+
+
+`EditPersonCommand#execute` utilizes the following method `Person#hasOrderConflicts` to check if there are any conflicts between the person's allergy and his/her orders.
+```java
+    public boolean hasOrderConflicts() {
+        return orders.stream().anyMatch(o -> isAllergicToAny(o.getMedicines()));
+    }
+
+}
+```
+
+`Person#isAllergicToAny(medicines)` returns true if the person is allergic to any of the given medicines.
+
+```java
+    public boolean isAllergicToAny(Set<Medicine> medicines) {
+        return medicines.stream().anyMatch(medicine -> isAllergicTo(medicine));
+    }
+```
+
 ### Add medicine short form feature  
 
 #### Implementation
@@ -192,7 +330,7 @@ Step 7: The `Medicine` at index 1 is replaced with a new `Medicine` which has sa
 
 The following sequence diagram illustrates some of the steps that happen when user execute `sfm 1 m/pan`
 
-![AddShortFormSequenceDiagram](images/AddShortFormSequenceDiagram.png)
+![ShortFormSequenceDiagram](images/ShortFormSequenceDiagram.png)
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifelines should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
 </div>  
  
@@ -231,7 +369,7 @@ Step 6: The `Medicine` at index 1 is replaced with a new `Medicine` which has sa
 
 The following activity diagram summarises the sequence of steps for the whole `sfm` command.
 
-<img src="images/ShortFormActivityDiagram.png" width="250" />
+<img src="images/ShortFormActivityDiagram.png" width="400" />
 
 
 ### Adding an Order feature
@@ -289,67 +427,6 @@ The following sequence diagram shows how `findo` works on an example input. `fin
 <img src="images/FindoSequenceDiagram.png" width="1200" />
 
 
-### ViewX feature
-
-The `viewp/ viewo` feature allows users to view details of a person/ order in the info display panel. This is facilitated with the new interface, `InfoObject`, which classes that want to be displayed are required to implement.
-
-To support this feature, `CommandResult` has the field `InfoObject`. If present (not null), the UI will create and attach a view for that `InfoObject` onto the Info Display.
-
-The code excerpt for `MainWindow#handleDisplayInfo(InfoObject)` below shows how the InfoDisplay is rendered:
-
-```java
-    @FXML
-    protected void handleDisplayInfo(InfoObject objectToDisplay) {
-        assert(objectToDisplay instanceof Order || objectToDisplay instanceof Person);
-
-        if (objectToDisplay instanceof Order) {
-            Order order = (Order) objectToDisplay;
-            OrderDisplay orderDisplay = new OrderDisplay(order);
-            infoDisplay.attach(orderDisplay)
-        } else if (objectToDisplay instanceof Person) {
-            Person person = (Person) objectToDisplay;
-            PersonDisplay personDisplay = new PersonDisplay(person);
-            infoDisplay.attach(personDisplay)
-        } else {
-            throw new RuntimeException("Invalid object to display");
-        }
-    }
-```
-
-
-The following sequence diagram shows how the `viewp` operation works:
-
-![ViewpSequenceDiagram](images/ViewpSequenceDiagram.png)
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<img src="images/ViewActivityDiagram.png" width="450" />
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** As it currently stands in PharmHub, InfoObject can only be a Person or an Order.
-
-</div>
-
-#### Design considerations:
-**Aspect: How the UI is informed about the object to display:**
-
-* **Alternative 1 (current choice):** Require Classes that want to be displayed to implement `InfoObject`
-    * Pros: Allows `CommandResult` to contain a uniform type (`InfoObject`), which scales easily. Also gives control over which classes can be displayed, and which classes cannot (yet). 
-    * Cons: Empty `InfoObject` interface may lead to confusion for new developers.
-
-* **Alternative 2:** Have `CommandResult` contain all types of objects that we want displayed, ie `Person` and `Order`
-    * Pros: Possibly clearer in intent
-    * Cons: Not easily scalable
-
-**Aspect: Creation of relevant `InfoObject` UI component:**
-
-* **Alternative 1 (current choice):** If-else checks in `MainWindow#handleDisplayInfo`, and create the required UI component for each clause
-    * Pros: Reduces coupling between `Person` (and `Order`) model and UI
-    * Cons: Less scalable
-
-* **Alternative 2:** Create abstract method `InfoObject#createUIComponent`, and have Classes that wish to be displayed implement this method and create their own UI components
-    * Pros: Easily scalable - each class implements their own UI display to attach into the placeholder
-    * Cons: Increased coupling between UI and Model. UI-creation code exists inside the `Person` (or `Order`) Class
-
 ### Undo/redo feature
 
 The undo/redo mechanism is facilitated by `VersionedPharmHub`. It extends `PharmHub` with an undo/redo history, stored internally as an `undoHistory Deque` and `redoHistory Deque`. Additionally, it implements the following operations:
@@ -405,46 +482,28 @@ Step 6. The user executes `clear`, which calls `Model#Clear()`, which in turn ca
 
 The following activity diagram summarizes what happens when a user executes a new command:
 
-<img src="images/CommitActivityDiagram.png" width="450" />
+<img src="images/CommandActivityDiagram.png" width="400" />
 
 #### Design considerations:
 
-**Aspect: How undo & redo executes:**
+* **Aspect: How undo & redo executes:**
 
-* **Alternative 1 (current choice):** Saves the entire pharmHub.
-    * Pros: Easy to implement.
-    * Cons: May have performance issues in terms of memory usage.
+  * **Alternative 1 (current choice):** Saves the entire pharmHub.
+      * Pros: Easy to implement.
+      * Cons: May have performance issues in terms of memory usage.
 
-* **Alternative 2:** Individual command knows how to undo/redo by itself.
-    * Pros: Will use less memory (e.g. for `deletep`, just save the person being deleted).
-    * Cons: We must ensure that the implementation of each individual command are correct.
+  * **Alternative 2:** Individual command knows how to undo/redo by itself.
+      * Pros: Will use less memory (e.g. for `deletep`, just save the person being deleted).
+      * Cons: We must ensure that the implementation of each individual command are correct.
 
-**Aspect: Effects (Scale) of undo & redo:**
-* **Alternative 1 (current choice):** Only affects data-modifying operations
-    * Pros: Simple to implement, provides essential functionality
-    * Cons: Non-data-modifying commands cannot be undone, eg. `list`
+* **Aspect: Effects (Scale) of undo & redo:**
+  * **Alternative 1 (current choice):** Only affects data-modifying operations
+      * Pros: Simple to implement, provides essential functionality
+      * Cons: Non-data-modifying commands cannot be undone, eg. `list`
 
-* **Alternative 2:** Affects all commands
-    * Pros: Changes in view can be undone, leading to greater convenience. Easily extensible to undo certain views
-    * Cons: Versioning has to be extended to keep track of UI, which may lead to increased coupling.
-
-### ListX
-
-The listing functionality is supported by the listPanelPlaceholder in the Ui.
-
-On start of application, two listPanels (PersonListPanel, OrderListPanel) are created, and person list panel is attached
-to the ListPanel Placeholder as default.
-
-On execution of the any listing commands (`listo` or `listp`), the resultant CommandResult contains details on which
-panel to choose to display.
-
-These are 3 different options for these details:
-* Person - Panel will display list of people
-* Order - Panel will display list of orders
-* NoChange - Panel will keep whatever was there previously
-
-Using these specifications, the CommandResult from executing `listo` and `listp` will inform the Ui of which
-panel to attach to the listPanelPlaceHolder
+  * **Alternative 2:** Affects all commands
+      * Pros: Changes in view can be undone, leading to greater convenience. Easily extensible to undo certain views
+      * Cons: Versioning has to be extended to keep track of UI, which may lead to increased coupling.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -899,6 +958,13 @@ Guarantees: The list of Orders that fulfills the status or medicine or both will
 1. Application should be smaller than 100mb so that application can be run on space constrained systems.
 1. Generated storage file shouldn't take up more than 100mb of storage so that the application can be run on space constrained systems.
 
+#### General
+
+* **Mainstream OS**: Windows, Linux, Unix, OS-X
+* **CLI**: Command Line Interface
+* **GUI**: Graphical User Interface
+* **API**: Application Programming Interface
+* **MSS**: Main Success Scenario (or, Happy Path)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -928,21 +994,85 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
+### Adding a person
+1. Adding a Person with Valid Details
+    1. Test Case: `addp n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
+ 
+       Expected: John Doe is added as a new person to PharmHub. All provided details, including the name, phone number, email, and address, are correctly saved. No errors or warnings are displayed.
+
+    1. Test Case: `addp n/Betsy Crowe t/diabetic e/betsycrowe@example.com a/19 Kent Ridge Crescent p/1234567 t/senior`
+       
+        Expected: Betsy Crowe is added as a new person to PharmHub. All provided details, including the name, phone number, email, and address, tags, and allergies, are correctly saved. No errors or warnings are displayed.
+2.  Adding a Person with Incorrect/Incomplete Information
+    1. `addp n/Jane Doe`
+    
+       Expected: An error message is displayed due to the absence of the phone number, email, and address. The person isn’t added as these details are mandatory.
+   
+3. Adding a Person with Duplicate Name 
+    1. Prerequisites: A person with name "John Doe" already exists in PharmHub. This can be done using the command in 1.i.
+    1. Test case: `addp n/John Doe p/9872 e/anotherjohnd@example.com a/Jane street, block 42, #03-02`
+    
+       Expected: An error message is displayed due to the presence of a person with the same name. The person isn’t added as names must be unique.
+4. Adding a Person with an allergy which is not yet in the Medicine list
+   1. Prerequisites: A persons list without the person with name "John Doe". A medicine list without the medicine "Aspirin". You can run the command `clear` to clear all entries in PharmHub. 
+   1. Test case: `addp n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 no/Aspirin`
+      Expected: An error message is displayed due to the presence of an allergy which is not in the medicine list. The person isn’t added as the allergy must be in the medicine list.
+
 ### Deleting a person
 
 1. Deleting a person while all persons are being shown
 
     1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-    1. Test case: `delete 1`<br>
+    1. Test case: `deletep 1`<br>
        Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
 
-    1. Test case: `delete 0`<br>
+    1. Test case: `deletep 0`<br>
        Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
 
-    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+    1. Other incorrect delete commands to try: `deletep`, `deletep x`, `...` (where x is larger than the list size)<br>
        Expected: Similar to previous.
 
+### Viewing a person
+1. Viewing a person with valid index
+    1. Prerequisites: There is at least 1 person in the persons list of PharmHub. This can be done using the command in 1.i. This can be checked using the command: `listp`
+    1. Test case: `viewp 1`<br>
+       Expected: First contact is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+
+    1. Test case: `viewp 0`<br>
+       Expected: No person is shown. Error details shown in the status message. Status bar remains the same.
+
+    1. Other incorrect view commands to try: `viewp`, `viewp x`, `...` (where x is larger than the list size)<br>
+       Expected: Similar to previous.
+
+### Editing a person 
+1. Editing a person using valid fields
+    1. Test case: `editp 1 n/John Doe p/98765432`
+ 
+       Expected: First contact is edited. Details of the edited contact shown in the status message. Timestamp in the status bar is updated.
+
+### Finding person(s)
+1. Finding person(s) using valid fields 
+    1. Test case: `findp n/John`
+       Expected: First contact is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `findp n/Alex John`
+       Expected: All person(s) with name containing "Alex" or "John" is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `findp t/senior diabetic`
+       Expected: All person(s) with tag containing "senior" or "diabetic" is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `findp no/Aspirin Paracetamol`
+       Expected: All person(s) with allergy containing "Aspirin" or "Paracetamol" is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `findp p/123456`
+       Expected: All person(s) with phone number equal to "123456" is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `findp e/john@gmail.com`
+       Expected: All person(s) with email equal to "john@gmail.com" is shown in the details panel. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+
+2. Finding person(s) using invalid input
+    1. Test case: `findp`
+       Expected: An error message is displayed due to the absence of any field. No person is shown.
+    1. Test case: `findp n/`
+       Expected: An error message is displayed due to the absence of the name. No person is shown.
+    1. Test case: `findp t/`
+       Expected: An error message is displayed due to the absence of the tag. No person is shown.
 2. _{ more test cases …​ }_
 
 ### Listing all medicines
@@ -1124,6 +1254,14 @@ testers are expected to do more *exploratory* testing.
       Expected: No order deleted. `Invalid Command Format` error message shown.
 
    
+    1. Test case: `editp 0 n/John Doe p/98765432`<br>
+       
+       Expected: No person is edited. Error details shown in the status message. Status bar remains the same.
+
+    1. Other incorrect edit commands to try: `editp`, `editp x`, `...` (where x is larger than the list size)<br>
+       
+       Expected: Similar to previous.
+       
 ### Saving data
 
 1. Dealing with missing/corrupted data files
@@ -1144,6 +1282,9 @@ testers are expected to do more *exploratory* testing.
    the medicine followed by using `sfm` command to add a short form to it. We plan to allow `addm` accept an optional parameter for 
    the short form of the medicine being added. 
 
+1. Currently, the sample data shows incorrect values for tags of persons. We plan to fix this by replacing the current sample tags with 
+   tags that are appropriate in a pharmacy setting like `Elderly`, `Diabetic` or `Child` and so on.
+
 1. Currently, Undo and Redo commands do not affect the UI. As such, commands such as `listp` and `findp` cannot be undone. Moreover, this makes it such that a recently added person, that is later deleted by `undo`, will still be visible in the Info Display, until another command (eg. `viewp`) displaces it.<br />
 Example:<br />
 Originally, PharmHub has the following display.<br />
@@ -1154,6 +1295,7 @@ On `undo`, the person's information still stays on the Info Display, even though
 <img src="images/BetterUndo-2.png" width="574" /><br />
 We plan to enhance the Undo/Redo feature to allow UI changes to be undone/ redone. In this way, UI states are saved along with the data, and can be reverted with `undo` and `redo`.<br />
 In the case of the example given, after the implementation of this planned enhancement, the UI should revert back to an empty display after the `undo` command is ran.
+
 
 
 ## **Appendix: Effort**

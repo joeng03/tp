@@ -11,7 +11,7 @@ import seedu.pharmhub.commons.util.StringUtil;
 import seedu.pharmhub.model.order.Order;
 
 /**
- * A ui for the status bar that is displayed at the header of the application.
+ * A ui for the order display that is displayed in the info display box.
  */
 public class OrderDisplay extends UiPart<Region> {
 

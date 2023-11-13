@@ -68,7 +68,7 @@ public class AddPersonCommand extends Command {
         }
 
         Set<Medicine> allergyMedicines = toAdd.getAllergies().stream()
-                .map(Allergy::getAllery).collect(Collectors.toSet());
+                .map(Allergy::getAllergy).collect(Collectors.toSet());
         Set<Medicine> convertedMedicines = CommandUtil.getModelMedicine(model, allergyMedicines);
 
         Set<Allergy> convertedAllergies = convertedMedicines.stream().map(Allergy::new).collect(Collectors.toSet());

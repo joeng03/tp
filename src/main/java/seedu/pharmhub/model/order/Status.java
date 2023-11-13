@@ -7,7 +7,7 @@ import seedu.pharmhub.logic.commands.exceptions.CommandException;
 import seedu.pharmhub.model.order.exceptions.InvalidStatusException;
 
 /**
- * Represents a Status of a order.
+ * Represents a Status of an order.
  * Guarantees: Status is valid as declared in {@link #isValidOrderStatus(OrderStatus)}
  */
 public class Status {

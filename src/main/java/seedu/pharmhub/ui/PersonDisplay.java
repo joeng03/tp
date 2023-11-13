@@ -12,7 +12,7 @@ import seedu.pharmhub.model.person.Person;
 
 
 /**
- * An ui for the status bar that is displayed at the header of the application.
+ * An ui for the person display that is displayed in the info display box.
  */
 public class PersonDisplay extends UiPart<Region> {
 

@@ -87,7 +87,7 @@ class JsonSerializablePharmHub {
             }
 
             Set<Medicine> allergyMedicines = new HashSet<>(person.getAllergies().stream()
-                    .map(Allergy::getAllery).collect(Collectors.toList()));
+                    .map(Allergy::getAllergy).collect(Collectors.toList()));
             Set<Medicine> convertedMedicines = getMedicines(pharmHub, allergyMedicines);
 
             Set<Allergy> convertedAllergies = new HashSet<>(convertedMedicines.stream().map(Allergy::new)
