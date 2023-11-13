@@ -1,0 +1,26 @@
+@startuml
+skin rose
+skinparam ActivityFontSize 15
+skinparam ArrowFontSize 12
+start
+:User executes command;
+
+'Since the beta syntax does not support placing the condition outside the
+'diamond we place it as the true branch instead.
+
+if () then ([d/ flag present])
+    if () then (index is valid)
+        : Delete medicine;
+    else ([else])
+    endif
+else ([else])
+    if () then (index is valid)
+            if () then (short form is valid)
+                        : Add short form;
+            else ([else])
+            endif
+    else ([else])
+    endif
+endif
+stop
+@enduml

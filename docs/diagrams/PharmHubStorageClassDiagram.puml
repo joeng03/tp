@@ -1,0 +1,52 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor STORAGE_COLOR
+skinparam classBackgroundColor STORAGE_COLOR
+
+package Storage as StoragePackage {
+
+package "UserPrefs Storage" #F4F6F6{
+Class "<<interface>>\nUserPrefsStorage" as UserPrefsStorage
+Class JsonUserPrefsStorage
+}
+
+Class "<<interface>>\nStorage" as Storage
+Class StorageManager
+
+package "PharmHub Storage" #F4F6F6{
+Class "<<interface>>\nPharmHubStorage" as PharmHubStorage
+Class JsonPharmHubStorage
+Class JsonSerializablePharmHub
+Class JsonAdaptedPerson
+Class JsonAdaptedTag
+Class JsonAdaptedOrder
+Class JsonAdaptedAllergy
+Class JsonAdaptedMedicine
+Class JsonAdaptedStatus
+}
+
+}
+
+Class HiddenOutside #FFFFFF
+HiddenOutside ..> Storage
+
+StorageManager .up.|> Storage
+StorageManager -up-> "1" UserPrefsStorage
+StorageManager -up-> "1" PharmHubStorage
+
+Storage -left-|> UserPrefsStorage
+Storage -right-|> PharmHubStorage
+
+JsonUserPrefsStorage .up.|> UserPrefsStorage
+JsonPharmHubStorage .up.|> PharmHubStorage
+JsonPharmHubStorage ..> JsonSerializablePharmHub
+JsonSerializablePharmHub --> "*" JsonAdaptedPerson
+JsonSerializablePharmHub --> "*" JsonAdaptedOrder
+JsonSerializablePharmHub --> "*" JsonAdaptedMedicine
+JsonAdaptedPerson --> "*" JsonAdaptedTag
+JsonAdaptedPerson --> "*" JsonAdaptedAllergy
+JsonAdaptedOrder --> "1" JsonAdaptedStatus
+JsonAdaptedOrder --> "*" JsonAdaptedMedicine
+
+@enduml

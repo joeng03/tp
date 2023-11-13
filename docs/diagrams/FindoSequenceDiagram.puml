@@ -1,0 +1,98 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":PharmHubParser" as PharmHubParser LOGIC_COLOR
+participant ":FindOrderCommandParser" as FindOrderCommandParser LOGIC_COLOR
+participant ":ParserUtil" as ParserUtil LOGIC_COLOR
+participant "cmd:FindOrderCommand" as FindOrderCommand LOGIC_COLOR
+participant "s:Status" as Status MODEL_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+
+
+end box
+
+box Model MODEL_COLOR_T1
+participant "s:Status" as Status MODEL_COLOR
+participant "m:Medicine" as Medicine MODEL_COLOR
+participant ":Model" as Model MODEL_COLOR
+
+end box
+[--> LogicManager : execute("findo s/pd m/pan ibuprofen)
+activate LogicManager
+
+LogicManager -> PharmHubParser : parseCommand("findo s/pd m/pan ibuprofen")
+activate PharmHubParser
+
+create FindOrderCommandParser
+PharmHubParser -> FindOrderCommandParser
+activate FindOrderCommandParser
+
+FindOrderCommandParser --> PharmHubParser
+deactivate FindOrderCommandParser
+
+PharmHubParser -> FindOrderCommandParser : parse("s/pd m/pan ibuprofen")
+activate FindOrderCommandParser
+
+opt getValue(PREFIX_STATUS).isPresent()
+FindOrderCommandParser -> ParserUtil : parseStatus("pd")
+activate ParserUtil
+
+ParserUtil -> Status : new Status(PENDING)
+activate Status
+
+Status --> ParserUtil : s
+deactivate Status
+ParserUtil --> FindOrderCommandParser : s
+deactivate ParserUtil
+end
+
+opt getValue(PREFIX_MEDICINE).isPresent()
+FindOrderCommandParser -> ParserUtil : parseMedicines("pan ibuprofen")
+activate ParserUtil
+
+ParserUtil -> Medicine : new Medicine({panadol, ibuprofen})
+activate Medicine
+
+Medicine --> ParserUtil : m
+deactivate Medicine
+ParserUtil --> FindOrderCommandParser : m
+deactivate ParserUtil
+end
+
+create FindOrderCommand
+FindOrderCommandParser -> FindOrderCommand : new FindOrderCommand(s,m)
+
+activate FindOrderCommand
+
+FindOrderCommand --> FindOrderCommandParser : cmd
+deactivate FindOrderCommand
+
+FindOrderCommandParser --> PharmHubParser : cmd
+deactivate FindOrderCommandParser
+PharmHubParser --> LogicManager : cmd
+deactivate PharmHubParser
+
+LogicManager -> FindOrderCommand : execute()
+activate FindOrderCommand
+
+FindOrderCommand -> Model : updateFilteredOrderList(combined)
+activate Model
+
+Model --> FindOrderCommand
+deactivate Model
+
+create CommandResult
+FindOrderCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> FindOrderCommand
+deactivate CommandResult
+FindOrderCommand --> LogicManager : result
+deactivate FindOrderCommand
+LogicManager -->[
+deactivate LogicManager
+@enduml

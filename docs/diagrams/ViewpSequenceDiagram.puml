@@ -1,0 +1,40 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+skinparam sequenceReferenceBackgroundColor white
+
+box Ui UI_COLOR_T1
+participant ":MainWindow" as MainWindow UI_COLOR
+participant ":InfoDisplay" as InfoDisplay UI_COLOR
+-> MainWindow : executeCommand(viewp)
+activate MainWindow
+
+ref over MainWindow : execute command
+
+MainWindow -> MainWindow : handleDisplayInfoObject(Person)
+activate MainWindow
+
+create "pd:PersonDisplay" as PersonDisplay UI_COLOR
+MainWindow -> PersonDisplay : PersonDisplay(Person)
+activate PersonDisplay
+
+PersonDisplay --> MainWindow : pd
+deactivate PersonDisplay
+
+MainWindow -> InfoDisplay : attach(pd)
+activate InfoDisplay
+
+InfoDisplay --> MainWindow
+deactivate InfoDisplay
+
+MainWindow --> MainWindow
+deactivate MainWindow
+
+<-- MainWindow : result
+deactivate MainWindow
+
+
+
+endbox
+
+@enduml

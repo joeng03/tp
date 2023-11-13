@@ -4,7 +4,7 @@ skinparam ArrowFontStyle plain
 
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
-participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":PharmHubParser" as PharmHubParser LOGIC_COLOR
 participant "u:AddOrderCommand" as AddOrderCommand LOGIC_COLOR
 participant "o:Order" as Order MODEL_COLOR
 
@@ -17,18 +17,18 @@ end box
 [--> LogicManager : execute("addorder 1 m/aspirin o/1")
 activate LogicManager
 
-LogicManager -> AddressBookParser : parseCommand("addorder 1 m/aspirin o/1")
-activate AddressBookParser
+LogicManager -> PharmHubParser : parseCommand("addorder 1 m/aspirin o/1")
+activate PharmHubParser
 
 create AddOrderCommand
-AddressBookParser -> AddOrderCommand
+PharmHubParser -> AddOrderCommand
 activate AddOrderCommand
 
-AddOrderCommand --> AddressBookParser
+AddOrderCommand --> PharmHubParser
 deactivate AddOrderCommand
 
-AddressBookParser --> LogicManager : u
-deactivate AddressBookParser
+PharmHubParser --> LogicManager : u
+deactivate PharmHubParser
 
 LogicManager -> AddOrderCommand : execute()
 activate AddOrderCommand

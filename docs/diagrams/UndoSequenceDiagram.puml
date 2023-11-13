@@ -4,45 +4,61 @@ skinparam ArrowFontStyle plain
 
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
-participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":PharmHubParser" as PharmHubParser LOGIC_COLOR
 participant "u:UndoCommand" as UndoCommand LOGIC_COLOR
 end box
 
 box Model MODEL_COLOR_T1
 participant ":Model" as Model MODEL_COLOR
-participant ":VersionedAddressBook" as VersionedAddressBook MODEL_COLOR
+participant ":VersionedPharmHub" as VersionedPharmHub MODEL_COLOR
 end box
 [-> LogicManager : execute(undo)
 activate LogicManager
 
-LogicManager -> AddressBookParser : parseCommand(undo)
-activate AddressBookParser
+LogicManager -> PharmHubParser : parseCommand(undo)
+activate PharmHubParser
 
 create UndoCommand
-AddressBookParser -> UndoCommand
+PharmHubParser -> UndoCommand
 activate UndoCommand
 
-UndoCommand --> AddressBookParser
+UndoCommand --> PharmHubParser
 deactivate UndoCommand
 
-AddressBookParser --> LogicManager : u
-deactivate AddressBookParser
+PharmHubParser --> LogicManager : u
+deactivate PharmHubParser
 
 LogicManager -> UndoCommand : execute()
 activate UndoCommand
 
-UndoCommand -> Model : undoAddressBook()
+UndoCommand -> Model : canUndo()
 activate Model
 
-Model -> VersionedAddressBook : undo()
-activate VersionedAddressBook
+Model -> VersionedPharmHub : canUndo()
+activate VersionedPharmHub
 
-VersionedAddressBook -> VersionedAddressBook :resetData(ReadOnlyAddressBook)
-VersionedAddressBook --> Model :
-deactivate VersionedAddressBook
+VersionedPharmHub -> Model
+deactivate VersionedPharmHub
 
-Model --> UndoCommand
+Model -> UndoCommand
 deactivate Model
+
+opt #transparent canUndo
+
+    UndoCommand -> Model : undo()
+    activate Model
+
+    Model -> VersionedPharmHub : undo()
+    activate VersionedPharmHub
+
+    VersionedPharmHub -> VersionedPharmHub :resetData(ReadOnlyPharmHub)
+    VersionedPharmHub --> Model :
+    deactivate VersionedPharmHub
+
+    Model --> UndoCommand
+    deactivate Model
+
+end
 
 UndoCommand --> LogicManager : result
 deactivate UndoCommand

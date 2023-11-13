@@ -5,99 +5,55 @@ title: Immanuel Chia's Project Portfolio Page
 
 ### Project: Pharmhub
 
-[//]: # (AddressBook - Level 3 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.)
-
-To be added soon...
+PharmHub is a desktop application for pharmacists to track orders. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
 
 Given below are my contributions to the project.
 
-To be added soon...
+**New Feature**: Added the ability to undo/redo previous commands.
 
-[//]: # (* **New Feature**: Added the ability to undo/redo previous commands.)
+* What it does: allows the user to undo up to 30 previous data-changing commands one at a time. Preceding undo commands can be reversed by using the redo command.
 
-[//]: # ()
-[//]: # (    * What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.)
+* Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them. This is also vital to prevent accidental loss of data, which can have catastrophic consequences given the sensitive nature of medicine order management.
 
-[//]: # ()
-[//]: # (    * Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.)
+* Highlights: This enhancement affects existing commands and commands to be added in future. 
 
-[//]: # ()
-[//]: # (    * Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.)
+* Credits: None
 
-[//]: # ()
-[//]: # (    * Credits: *{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}*)
+**New Feature**: Added the ability to view a person/ medication detail in an info display via `viewp` or `viewo`
 
-[//]: # ()
-[//]: # ()
-[//]: # (* **New Feature**: Added a history command that allows the user to navigate to previous commands using up/down keys.)
+* What it does: Allows the user to see more details about a person/ order in an expanded info display.
 
+* Justification: When it comes to patient and medication details, there are a lot of details to capture, and is unfeasible to capture all of the information regarding a patient/ order in a small list card. This detailed view allows users to see condensed details in the listview, and see full details in the info panel, should they wish to. This ability to peg information of a patient/ order onto the info display also gives users greater versatility with navigation, ie. users are able to list all orders *and* the details of a specific patient at the same time.
 
-* **Code contributed**: 
+* Highlights: This enhancement affects existing commands and commands to be added in future.
 
-To be added soon...
+* Credits: None
 
-[//]: # (* [RepoSense link]&#40;&#41;)
+**Code contributed**: [RepoSense link](https://nus-cs2103-ay2324s1.github.io/tp-dashboard/?search=heeaz&breakdown=false&sort=groupTitle%20dsc&sortWithin=title&since=2023-09-22&timeframe=commit&mergegroup=&groupSelect=groupByRepos)
 
+**Project management**:
 
-* **Project management**:
-
-To be added soon...
-
-[//]: # (    * Managed releases `v1.3` - `v1.5rc` &#40;3 releases&#41; on GitHub)
-
+* Managed releases `v1.3` - `v1.4` (2 releases) on GitHub
+* Managed issues on github: scoping and defining taskings that need to be done, including consolidating PE-D issues
 
 * **Enhancements to existing features**:
 
-To be added soon...
-
-[//]: # (    * Updated the GUI color scheme &#40;Pull requests [\#33]&#40;&#41;, [\#34]&#40;&#41;&#41;)
-
-[//]: # (    * Wrote additional tests for existing features to increase coverage from 88% to 92% &#40;Pull requests [\#36]&#40;&#41;, [\#38]&#40;&#41;&#41;)
+* Enhanced listPanel GUI with onclick functionalities [#90](https://github.com/AY2324S1-CS2103T-W08-4/tp/pull/90)
+* Enhanced add, edit and delete feedback by displaying the affected patient/ order on the info display [#90](https://github.com/AY2324S1-CS2103T-W08-4/tp/pull/90)
 
 
-* **Documentation**:
+**Documentation**:
 
-To be added soon...
+* User Guide:
 
-[//]: # (    * User Guide:)
+* Added documentation for the features `viewp`, `viewo`, `undo`, and `redo`
 
-[//]: # ()
-[//]: # (        * Added documentation for the features `delete` and `find` [\#72]&#40;&#41;)
+* Developer Guide:
 
-[//]: # ()
-[//]: # (        * Did cosmetic tweaks to existing documentation of features `clear`, `exit`: [\#74]&#40;&#41;)
+* TODO
 
-[//]: # ()
-[//]: # (    * Developer Guide:)
+**Community**:
 
-[//]: # ()
-[//]: # (        * Added implementation details of the `delete` feature.)
+* PRs reviewed (with non-trivial review comments): [\#65](https://github.com/AY2324S1-CS2103T-W08-4/tp/pull/65), [\#104](https://github.com/AY2324S1-CS2103T-W08-4/tp/pull/104), [\#102](https://github.com/AY2324S1-CS2103T-W08-4/tp/pull/102), [\#53](https://github.com/AY2324S1-CS2103T-W08-4/tp/pull/53)
 
-
-* **Community**:
-    
-To be added soon...
-
-[//]: # (    * PRs reviewed &#40;with non-trivial review comments&#41;: [\#12]&#40;&#41;, [\#32]&#40;&#41;, [\#19]&#40;&#41;, [\#42]&#40;&#41;)
-
-[//]: # ()
-[//]: # (    * Contributed to forum discussions &#40;examples: [1]&#40;&#41;, [2]&#40;&#41;, [3]&#40;&#41;, [4]&#40;&#41;&#41;)
-
-[//]: # ()
-[//]: # (    * Reported bugs and suggestions for other teams in the class &#40;examples: [1]&#40;&#41;, [2]&#40;&#41;, [3]&#40;&#41;&#41;)
-
-[//]: # ()
-[//]: # (    * Some parts of the history feature I added was adopted by several other class mates &#40;[1]&#40;&#41;, [2]&#40;&#41;&#41;)
-
-
-* **Tools**:
-
-To be added soon...
-
-[//]: # (    * Integrated a third party library &#40;Natty&#41; to the project &#40;[\#42]&#40;&#41;&#41;)
-
-[//]: # ()
-[//]: # (    * Integrated a new Github plugin &#40;CircleCI&#41; to the team repo)
-
-
-* _{you can add/remove categories in the list above}_
+* Reported bugs and suggestions for other teams in the class: None

@@ -1,0 +1,122 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":PharmHubParser" as PharmHubParser LOGIC_COLOR
+participant ":AddOrderCommandParser" as AddOrderCommandParser LOGIC_COLOR
+participant ":ParserUtil" as ParserUtil LOGIC_COLOR
+participant "u:AddOrderCommand" as AddOrderCommand LOGIC_COLOR
+participant "s:Status" as Status MODEL_COLOR
+participant "o:Order" as Order MODEL_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+
+
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant "oNum:OrderNumber" as OrderNumber MODEL_COLOR
+participant "m:Medicine" as Medicine MODEL_COLOR
+participant "s:Status" as Status MODEL_COLOR
+participant "o:Order" as Order MODEL_COLOR
+
+end box
+[--> LogicManager : execute("addo 1 m/aspirin o/1")
+activate LogicManager
+
+LogicManager -> PharmHubParser : parseCommand("addo 1 m/aspirin o/1000")
+activate PharmHubParser
+
+create AddOrderCommandParser
+PharmHubParser -> AddOrderCommandParser
+activate AddOrderCommandParser
+
+AddOrderCommandParser -> ParserUtil : parseOrderNumber("1000")
+activate ParserUtil
+create OrderNumber
+ParserUtil -> OrderNumber : new OrderNumber("1000")
+activate OrderNumber
+
+OrderNumber --> ParserUtil : oNum
+deactivate OrderNumber
+
+
+ParserUtil --> AddOrderCommandParser : oNum
+deactivate ParserUtil
+AddOrderCommandParser -> ParserUtil : parseMedicines("aspirin")
+activate ParserUtil
+create Medicine
+ParserUtil -> Medicine : new Medicine("aspirin")
+activate Medicine
+Medicine --> ParserUtil : m
+deactivate Medicine
+ParserUtil --> AddOrderCommandParser : m
+deactivate ParserUtil
+
+AddOrderCommandParser --> PharmHubParser
+deactivate AddOrderCommandParser
+
+PharmHubParser -> AddOrderCommandParser
+activate AddOrderCommandParser
+create AddOrderCommand
+AddOrderCommandParser -> AddOrderCommand : new AddOrderCommand(1,oNum,m,false)
+
+activate AddOrderCommand
+
+
+create Status
+AddOrderCommand -> Status : new Status(PENDING)
+
+activate Status
+Status --> AddOrderCommand : s
+deactivate Status
+
+AddOrderCommand --> AddOrderCommandParser : u
+deactivate AddOrderCommand
+AddOrderCommandParser --> PharmHubParser : u
+deactivate AddOrderCommandParser
+
+
+PharmHubParser --> LogicManager : u
+deactivate PharmHubParser
+
+LogicManager -> AddOrderCommand : execute()
+activate AddOrderCommand
+
+Create Order
+AddOrderCommand -> Order : new Order(oNum,p,m,s)
+activate Order
+
+Order --> AddOrderCommand : o
+deactivate Order
+
+AddOrderCommand -> Model : hasOrder (o)
+
+activate Model
+
+deactivate Model
+
+AddOrderCommand -> Model : addOrder(o)
+activate Model
+
+Model -> AddOrderCommand
+deactivate Model
+
+create CommandResult
+AddOrderCommand -> CommandResult
+activate CommandResult
+CommandResult --> AddOrderCommand
+deactivate CommandResult
+
+AddOrderCommand --> LogicManager : result
+deactivate AddOrderCommand
+AddOrderCommand -[hidden]-> LogicManager : result
+destroy AddOrderCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
+
+

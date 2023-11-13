@@ -1,0 +1,41 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package "" as ModelPackage <<Rectangle>>{
+Class Person
+Class Order
+Class Medicine {
+<color:LightGreen> - <color:White>String medicineName</color>
+<color:LightGreen> - <color:White>String shortForm</color>
+}
+
+Class Name
+Class Address
+Class Email
+Class Phone
+Class Tag
+
+Class OrderNumber
+Class Status
+
+}
+
+show Medicine fields
+
+Person *-down-> "1" Name
+Person *-down-> "1" Address
+Person *-down-> "1" Email
+Person *-down-> "1" Phone
+Person *-down-> "~*" Tag
+Person --> "~*" Medicine : is allergic to >
+Person "1" <-right-> "~*" Order
+
+
+Order *-down-> "1" OrderNumber
+Order *-down-> "1" Status
+Order --> "1..*" Medicine : contains >
+
+@enduml

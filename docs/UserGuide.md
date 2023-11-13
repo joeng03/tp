@@ -12,7 +12,7 @@ Pharmhub is a **desktop app for managing patients and their medication orders, o
 
 --------------------------------------------------------------------------------------------------------------------
 ## Table of Contents
-1. [Glossary](#glossary)
+1. [Using this Guide](#Using this guide)
     1. [Person](#person)
     2. [Order](#order)
     3. [Status](#status)
@@ -22,44 +22,48 @@ Pharmhub is a **desktop app for managing patients and their medication orders, o
 2. [Application Navigation](#application-navigation)
 3. [Quick Start](#quick-start)
 4. [Features](#features)
-5. [FAQ](#faq)
+5. [Command Summary](#command-summary)
+6. [FAQ](#faq)
+7. [Glossary](#glossary)
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Glossary
+## Using this guide  
+This section provides an introduction to the terminology used in this user guide. 
 
 ### Person
 
-For the entire user guide the term person is used to refer to the patient of which the pharmacist is addressing to.
-Persons are the people with whom you track your Orders and information for. To create an order with a person, they must first have been added to the app.
+For the entire user guide the term person is used to refer to the patient of which the pharmacist is addressing.
+Persons are the people with whom you track your Orders and information for.   
+To create an order with a person, they must first have been added to the app.
 
 A person has the following attributes:
 - Name
 - Phone number
 - Email Address
 - Address
-- Allergy(If the person has one)
+- Allergy(If the person has one. Can be one or more)
 
-Persons are uniquely identified by their names. No two persons can have the same name and names are case-insensitive.
+A person is uniquely identified by their name. No two persons can have the same name and names are case-insensitive.
 
 ### Order
 
-Orders are event in which an order has been placed for a single or multiple medication for a certain person in the person list.
+An order refers to a purchase of one or more medicines by a particular person in the person list.
 
 An Order has the following attributes:
 - Order Number
 - Person (Who the order belongs to)
-- Medicine (What is in the order)
+- Medicine (What is in the order. Can be one or more)
 - Status of the order
 
-Orders are uniquely identified by their order numbers. No two orders can have the same order number. 
-No orders containing the medicine that the person is allergy to can be added without a special flag.
+Orders are uniquely identified by their order numbers. No two orders can have the same order number.   
+No order containing a medicine that the person is allergic to can be added without a special flag.  
 Orders will automatically tag under the <span style="color: red;">PENDING</span>
 Status when added.
 
 ### Status
 
-Status are used to describe the process at which the order is at.
+Status is used to describe the process at which the order is at.
 Status can only be updated/modified following their chronological order.
 
 <span style="background-color: red; border-radius: 20%; padding: 1px;">PENDING/PD</span>
@@ -78,45 +82,54 @@ Medicine are objects that can be added to an order when it is being placed for a
 
 A Medicine has the following attribute:
 - Full Name of the medication
-- A optional short form for the medication
+- An optional short form for the medication
 
-Medicine are uniquely identified by their full and short form names. No two medicine can have the same names.
+Medicines are uniquely identified by their full and short form names. No two medicine can have the same names.
 
 ### Index
 
-All commands will be executed base on Index. Index refer to the numbering being shown in the person/order/medicine list.
-All index can only be more than 0, at least 1.
+Many commands rely on index for execution. Index refers to the numbering in the last shown person/order/medicine list.
+All indices have to be positive integers.
 
 As you can refer to the image below index 1 refer to OrderNumber #1 while index 3 refer to OrderNumber #5.
 
 ![listp](images/listo.png)
 
-Note: The Index will be base on the command being called and not the displayed list, 
+Note: The Index will be based on the command being called and not the displayed list, 
 if a command of viewp(view person) is being called, 
-the index taken will be base on the person list and not this list being shown currently.
+the index taken will be based on the person list and not this list being shown currently.
 
 ### Fields
-Inputs to fields should not contain an number of "/" sign. i.e "//" is allowed
+* Fields are the different parts of a command.  
+e.g. in `editp 1 n/Alex no/penicillin`, there are four fields. Namely, `editp`, `1`, `Alex`, `penicilllin`.    
+* Spaces before and after fields will be ignored.
+If there are multiple spaces between two words in fields, only one space would be retained.  
+As such `Alex Yeoh` will produce the same result as `Alex     Yeoh`  
+* To input a `/` character in a field, use another `/` before it.   
+If there is an odd  number of consecutive `/`, one of them will be ignored.  
+  e.g To input `Roy s/o Balakrishnan`, use `Roy s//o Balakrishnan`
 
 The following fields are used for commands:
 
-| Field         | Prefix            | Format                                                       | Example                               |
-|---------------|-------------------|--------------------------------------------------------------|---------------------------------------|
-| Index         | -                 | Must be a positive integer                                   | `1`, `2`, `3`                         |
-| Keyword       | -                 | Must not contain a singular "/" sign                         | `pan`, `Ah Tan s//o Ah Tan Tan`       |
-| Name          | n                 | Must be alphanumeric                                         | `Joe`, `Vishnu`                       |
-| Phone number  | p                 | Must be numeric and be at least 3 digits long                | `999`, `68741616`                     |
-| Email address | e                 | Must be a valid email address                                | `pharmhub@bestapp.sg`, `putin@russia` |
-| Address       | a                 | Must not contain a singular "/" sign                         | `Sentosa cove`, `Pulau NTU`           |
-| Status        | [Status](#status) | Must be a valid Status                                       | `PENDIND`, `Cc`                       |
-| Commands      | -                 | Must be the first input, case-insensitive                    | `addo`, `listm`                       |
+| Field         | Prefix | Format                                                                                                        | Example                                    |
+|---------------|--------|---------------------------------------------------------------------------------------------------------------|--------------------------------------------|
+| Index         | -      | Must be a positive integer                                                                                    | `1`, `2`, `3`                              |
+| Keyword       | -      | Must not be empty                                                                                             | `pan`, `Ah Tan s//o Ah Tan Tan`            |
+| Name          | n/     | Must only contain alphanumeric, space, dot, slash, <br/> hyphen and single quote characters. Case insensitive | `Roy s//o Balakrishnan`, `Connell O'Brien` |
+| Phone number  | p/     | Must be numeric and be at least 3 digits long                                                                 | `999`, `68741616`                          |
+| Email address | e/     | Must be a valid email address                                                                                 | `roy@gmail.com`, `Alex123@outlook.com`     |
+| Address       | a/     | Must not be empty                                                                                             | `Sentosa cove`, `Pulau NTU`                |
+| Status        | s/     | Must be a valid Status (Refer to [Status](#status))                                                           | `PENDIND`, `Cc`                            |
+| Medicine      | m/     | Must not be empty and is not case sensitive.                                                                  | `metformin`, `panadol`                     |
+| Allergy       | no/    | Must be a medicine name in PharmHub or its shortform.                                                         | `panadol`, `pan`                           |
+| Commands      | -      | Must be the first part of input and is case-insensitive                                                       | `addo`, `listm`                            |
 
 
 ---
 
 ## Application Navigation
 
-Below shows a guide on how you can navigate around our beautiful Graphical User Interface (GUI)
+Below shows a guide on how you can navigate around our interactive Graphical User Interface (GUI)
 
 ![Navigation](images/navigation.png)
 
@@ -124,7 +137,7 @@ Below shows a guide on how you can navigate around our beautiful Graphical User 
 |----------------------------|-------------------------------------------------------------|------------------------------------------------------------------|
 | Help Button                | Shows URL to our User Guide.                                | -                                                                |
 | Command Input Field        | Type commands here and press `Enter` to execute them.       | -                                                                |
-| Command Output Display     | Shows the result of the command execution.                  | -                                                                |
+| Result Display Box         | Shows the result of the command execution.                  | -                                                                |
 | Person Information Display | Shows Detailed information on a person.                     | Displays Name, Email, allergy and Orders under this person.      |
 | PersonList                 | Shows a list of person.                                     | List can be filtered by Keywords in the names.                   |
 | Person Card                | Shows a particular person with minimal details in the list. | Shows the Name, Allergies, Number, Address and Email.            |
@@ -139,6 +152,7 @@ Below shows a guide on how you can navigate around our beautiful Graphical User 
 ## Quick start
 
 1. Ensure you have Java `11` or above installed in your Computer.
+   * Run `java --version` in your command terminal to see the java version.
 
 2. Download the latest `PharmHub.jar` from [here](https://github.com/AY2324S1-CS2103T-W08-4/tp/releases).
 
@@ -180,13 +194,7 @@ Below shows a guide on how you can navigate around our beautiful Graphical User 
 **:information_source: Notes about the command format:**<br>
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  e.g. in `addp n/NAME`, `NAME` is a parameter which can be used as `addp n/John Doe`.  
-* Spaces before and after parameter will be ignored.  
-  If there is more than one space in between words in the parameter, it will be trimmed to one space.  
-  e.g `addp n/ Alex Yeoh` will produce the same result as `addp n/ Alex     Yeoh`
-* To input a `/` character in parameter, use another `/` before it.  
-  If there is an odd number of `/`, one of them will be ignored.  
-  e.g To input `Roy s/o Balakrishnan`, use `Roy s//o Balakrishnan`
+  e.g. in `addp n/NAME`, `NAME` is a parameter which can be used as `addp n/John Doe`.
 
 * Items in square brackets are optional.<br>
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
@@ -249,7 +257,7 @@ Edits an existing person in the PharmHub.
 
 Format: `editp INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] [no/ALLERGY]…​ [ia/]`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the last displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * This also edits orders belonging to the person.
 * At least one of the optional fields must be provided.
 * This command will not be able to add/delete orders to this person
@@ -260,7 +268,7 @@ Format: `editp INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] [no/ALLERG
 * You can remove all the person’s allergies by typing `no/` without
     specifying any allergies after it.
 * If the editing causes the person to be allergic any of the orders belonging to them, warning will be raised.
-* Use the `ia/` flag to override.
+* The warning can be overridden by adding the `ia/` to the command
 
 Examples:
 *  `editp 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
@@ -292,22 +300,26 @@ Deletes the specified person from PharmHub.
 Format: `deletep INDEX`
 
 * Deletes the person at the specified `INDEX`.
-* This also deletes orders belong to the person.
-* The index refers to the index number shown in the displayed person list.
+* The index refers to the index number shown in the last displayed person list.
 * The index **must be a positive integer** 1, 2, 3, …​
-
+<div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
+Deleting a person also deletes all orders corresponding to the person from PharmHub.
+</div>
 Examples:
-* `listp` followed by `deletep 2` deletes the 2nd person in the address book.
+* `listp` followed by `deletep 2` deletes the 2nd person in PharmHub.
 * `findp Betsy` followed by `deletep 1` deletes the 1st person in the results of the `find` command.
 
 ### Adding a new medicine : `addm`
 
-Adds a new medication into the system.  
+Adds a new medication into PharmHub.  
 
 Format: `addm m/MEDICINE_NAME`
 
-* The given name shouldn't match the name or short form any medicine in the system.   
+* The given name shouldn't match the name or short form of any medicine in PharmHub.   
 * Medicine names are case-insensitive.
+
+Example:
+* `addm m/Panadol`
 
 ### Listing all medicines : `listm`
 
@@ -321,13 +333,19 @@ Format: `listm`
 
 Finds all medicines whose name or short form contains any of the given keywords.  
 
-Format : `findm`
+Format : `Format: findm KEYWORD [MORE_KEYWORD]…`
 
 * The search is case-insensitive. e.g `pan` will match `Panadol`
 * The medicine name and it's short form is searched.
-* Unlike `findp`, partial words will be matched e.g. `para` will  match `Paracetamol`
 * Medicines matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `ol en` will return `Panadol`, `Ibuprofen`
+
+> [!NOTE]  
+> Unlike `findp`, partial words will be matched e.g. `para` will  match `Paracetamol`
+
+Examples:
+* `findm ol`
+* `findm ol para`
 
 ### Deleting a medicine : `deletem`
 
@@ -336,10 +354,14 @@ Deletes the specified medicine from PharmHub.
 Format: `deletem INDEX`
 
 * Deletes the medicine at the specified `INDEX`.
-* The index refers to the index number shown in the displayed medicine list.
+* The index refers to the index number shown in the last displayed medicine list.
 * The index **must be a positive integer** 1, 2, 3, …​ 
 * The command will be blocked if there are existing orders with the specified medicine 
   or persons allergic to the specified medicine.  
+
+
+Example:
+* `deletem 2`
 
 ### Adding and Deleting short form : `sfm`
 
@@ -347,12 +369,17 @@ Adds or Deletes a short form from the specified medicine from PharmHub.
 
 Format: `sfm INDEX [m/SHORT_FORM] [d/]`
 
+* Index refers to index of medicine in the last displayed medicine list.
+* At least one of `m/` or `d/` should be provided.
 * If the `d/` is not provided, the given short form will be added to the medicine at the specified `INDEX`.  
-* The provided short form must not be same as any existing medicine name or short form in PharmHub.  
-* Any existing short form of the medicine will be over written.
-* After this, the short form can be used interchangeably with the medicine name.  
+  * The provided short form must not be empty and must not be same as any existing medicine name or short form in PharmHub.  
+  * Any existing short form of the medicine will be overwritten.
+  * After this, the short form can be used interchangeably with the medicine name.  
 * If the `d/` is provided, the short form(if any) of the medicine at the specified `INDEX` will be deleted.  
+  * Any short form provided using `m/` will be ignored.
 
+Example:
+* `sfm 1 m/pan`
 
 ### Listing all orders : `listo` 
 
@@ -373,15 +400,15 @@ Format: `viewo`
 
 Adds a new order of the given medication(s) corresponding to a person into the system.
 
-Format: `addo INDEX o/ORDER_NUMBER m/MEDICINE_NAME [m/MEDICINE_NAME]…​ [/ia]`
+Format: `addo INDEX o/ORDER_NUMBER m/MEDICINE_NAME [m/MEDICINE_NAME]…​ [ia/]`
 
 * Orders are created automatically having a `status` of `pending`.
 * Orders can only be created for a person in the index range, and for a known `medicine`
 * Orders created for persons with an allergy to any of the medications in the order will raise a warning.
-* The warning can be overridden by adding the `/ia` to the command
+* The warning can be overridden by adding the `ia/` to the command
 
 Parameters:
-* `INDEX` - index of patient who is ordering the medicine as shown in the patient list.
+* `INDEX` - index of patient who is ordering the medicine as shown in the last displayed patient list.
 * `ORDER_NUMBER` - the order number of this order specified by the invoice.
 * `MEDICINE_NAME` - the name of medicine being ordered.
 
@@ -411,7 +438,7 @@ Example:
 
 Finds orders whose status and medicine satisfies both inputs.
 
-Format: `findo s/STATUS m/MEDICINE_NAME [m/MEDICINE_NAME]...`
+Format: `findo s/STATUS m/MEDICINE_NAME [m/MEDICINE_NAME]…`
 
 * The search is case-insensitive. e.g `PANADOL` will match `Panadol`, `COMPLETED` or `CP` will match `Completed`.
 * User input can find orders base on either status or medicines or both(but both will have to be satisfied).
@@ -488,20 +515,11 @@ If your changes to the data file makes its format invalid, PharmHub will discard
 
 --------------------------------------------------------------------------------------------------------------------
 
-## FAQ
 
-**Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous PharmHub home folder.
 
---------------------------------------------------------------------------------------------------------------------
 
-## Known issues
 
-1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
-
---------------------------------------------------------------------------------------------------------------------
-
-## Command summary
+## Command Summary
 
 | Action                    | Format, Examples                                                                                                                                                                                |
 |---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -518,13 +536,38 @@ If your changes to the data file makes its format invalid, PharmHub will discard
 | **Update Order Status**   | `updates INDEX s/STATUS`<br> e.g., `updates s/cancelled`                                                                                                                                        |
 | **Delete Order**          | `deleteo INDEX`<br> e.g., `deleteo 3`                                                                                                                                                           |
 | **List Medicine**         | `listm`                                                                                                                                                                                         |
-| **Find Medicine**         | `findm KEYWORD [MORE_KEYWORDS]`                                                                                                                                                                 |
-| **Add Medicine**          | `addm m/MEDICINE_NAME`                                                                                                                                                                          |
-| **Delete Medicine**       | `deletem INDEX`                                                                                                                                                                                 |
-| **Add/Delete Short Form** | `sfm INDEX [m/SHORT_FORM] [d/]`                                                                                                                                                                 |
+| **Find Medicine**         | `findm KEYWORD [MORE_KEYWORDS]`  <br/> e.g., `findm ol`                                                                                                                                         |
+| **Add Medicine**          | `addm m/MEDICINE_NAME`<br/> e.g., `addm m/panadol`                                                                                                                                              |
+| **Delete Medicine**       | `deletem INDEX` <br/> e.g., `deletem 1`                                                                                                                                                         |
+| **Add/Delete Short Form** | `sfm INDEX [m/SHORT_FORM] [d/]` <br/> e.g., `sfm 1 m/met`                                                                                                                                        |
 | **Undo**                  | `undo`                                                                                                                                                                                          |
 | **Redo**                  | `redo`                                                                                                                                                                                          |
 | **Clear**                 | `clear`                                                                                                                                                                                         |
 | **Help**                  | `help`                                                                                                                                                                                          |
 | **Exit**                  | `exit`                                                                                                                                                                                          |
 
+
+## FAQ
+
+**Q**: How do I transfer my data to another Computer?<br>
+**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous PharmHub home folder.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Known issues
+
+1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Glossary
+
+| Term                 | Meaning                                                                                                               |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------|
+| **Command Terminal** | A program which allows users to enter commands that the computer processes.                                           |
+| **`cd`**             | The command used in command terminal to change directory.                                                             |
+| **Gui**              | Graphical User Interface(GUI) is the digital interface that the user interacts with.                                  |
+| **Java**             | Java is a widely used programming language and is used in PharmHub.                                                   |
+| **Jar**              | Java Archive contains all of the various components that make up a Java application, in this case PharmHub.           |
+| **Json**             | JavaScript Object Notation(Json) is a text format for storing data. It is used by PharmHub to store application data.
+|  
