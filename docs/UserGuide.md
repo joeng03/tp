@@ -231,7 +231,7 @@ A person can have any number of tags or allergies (including 0)
 </div>
 
 Examples:
-* `addp n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 no/paracetamol no/aspirin`
+* `addp n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 no/paracetamol no/penicillin`
 * `addp n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 
 ### Listing all persons : `listp`
@@ -279,19 +279,21 @@ Examples:
 
 Finds persons whose names contain any of the given keywords.
 
-Format: `findp KEYWORD [MORE_KEYWORDS]`
+Format: `findp [n/KEYWORD [MORE_KEYWORDS]…] [p/PHONE_NUMBER] [e/EMAIL] [t/KEYWORD [MORE_KEYWORDS]…] [no/KEYWORD [MORE_KEYWORDS]…]`
 
-* The search is case-insensitive. e.g `hans` will match `Hans`
+* The search for name, tags and allergies are case-insensitive. e.g `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+* The search for phone number and email are case-sensitive and must be an exact match.
+  e.g. `9123456` will not match `91234567` and `johndoe@example` does not match `johndoe@example.com`
+
 
 Examples:
-* `findp John` returns `john` and `John Doe`
-* `findp alex david` returns `Alex Yeoh`, `David Li`<br>
+* `findp n/Alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `findp no/paracetamol penicillin`
 
 ### Deleting a person : `deletep`
 
@@ -307,7 +309,7 @@ Deleting a person also deletes all orders corresponding to the person from Pharm
 </div>
 Examples:
 * `listp` followed by `deletep 2` deletes the 2nd person in PharmHub.
-* `findp Betsy` followed by `deletep 1` deletes the 1st person in the results of the `find` command.
+* `findp n/Betsy` followed by `deletep 1` deletes the 1st person in the results of the `find` command.
 
 ### Adding a new medicine : `addm`
 
@@ -319,7 +321,7 @@ Format: `addm m/MEDICINE_NAME`
 * Medicine names are case-insensitive.
 
 Example:
-* `addm m/Panadol`
+* `addm m/Aspirin`
 
 ### Listing all medicines : `listm`
 
@@ -381,22 +383,7 @@ Format: `sfm INDEX [m/SHORT_FORM] [d/]`
 Example:
 * `sfm 1 m/pan`
 
-### Listing all orders : `listo` 
-
-Shows an interactive list of all orders in PharmHub.
-
-Format: `listo`
-
-![listo](images/listo.png)
-
-### Viewing an order : `viewo` 
-
-Shows the order in the info panel.
-
-Format: `viewo`
-
-
-### Adding a new order : `addo` 
+### Adding a new order : `addo`
 
 Adds a new order of the given medication(s) corresponding to a person into the system.
 
@@ -414,10 +401,10 @@ Parameters:
 
 Examples:
 * `addo 1 o/618457 m/panadol`
-* `addo 3 o/438756 m/claritin`
+* `addo 3 o/438756 m/paracetamol`
 
 
-### Updating the status of an order : `updates` 
+### Updating the status of an order : `updates`
 
 Updates the status of the order to the designated status.
 
@@ -428,17 +415,32 @@ Format: `updates INDEX s/STATUS`
 * Statuses can be updated by skipping the hierarchy. `Pending -> Cancelled`
 * Shorthands can be used in replacement of the full names of the statuses
 
-Example: 
+Example:
 * `updates 1 s/completed`
 * `updates 1 s/COMPLETED`
 * `updates 1 s/cp`
 * `updates 1 s/CP`
 
+
+### Listing all orders : `listo` 
+
+Shows an interactive list of all orders in PharmHub.
+
+Format: `listo`
+
+![listo](images/listo.png)
+
+### Viewing an order : `viewo` 
+
+Shows the order in the info panel.
+
+Format: `viewo`
+
 ### Filtering/Finding Order by status and medicines: `findo`
 
 Finds orders whose status and medicine satisfies both inputs.
 
-Format: `findo s/STATUS m/MEDICINE_NAME [m/MEDICINE_NAME]…`
+Format: `findo s/STATUS [m/KEYWORD [MORE_KEYWORDS]…]`
 
 * The search is case-insensitive. e.g `PANADOL` will match `Panadol`, `COMPLETED` or `CP` will match `Completed`.
 * User input can find orders base on either status or medicines or both(but both will have to be satisfied).
@@ -487,7 +489,6 @@ Example:
 * `addp` -> `undo` -> `listp` -> `redo` will redo the `addp` command successfully
 
 
-
 ### Clearing all entries : `clear`
 
 Clears all entries from PharmHub.
@@ -524,22 +525,22 @@ If your changes to the data file makes its format invalid, PharmHub will discard
 | Action                    | Format, Examples                                                                                                                                                                                |
 |---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **List People**           | `listp`                                                                                                                                                                                         |
-| **Find Person**           | `findp KEYWORD [MORE_KEYWORDS]`<br> e.g., `findp James Jake`                                                                                                                                    |
+| **Find Person**           | `findp [n/KEYWORD [MORE_KEYWORDS]…] [p/PHONE_NUMBER] [e/EMAIL] [t/KEYWORD [MORE_KEYWORDS]…] [no/KEYWORD [MORE_KEYWORDS]…]`<br> e.g., `findp n/James Jake`                                       |
 | **View Person**           | `viewp INDEX` <br> e.g., `viewp 1`                                                                                                                                                              |
 | **Add Person**            | `addp n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG] [no/ALLERGY]…​` <br> e.g., `addp n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague no/aspirin` |
 | **Edit Person**           | `editp INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG] [no/allergy]…​`<br> e.g.,`editp 2 n/James Lee e/jameslee@example.com`                                                      |
 | **Delete Person**         | `deletep INDEX`<br> e.g., `deletep 3`                                                                                                                                                           |
 | **List Orders**           | `listo`                                                                                                                                                                                         |
-| **Find Order**            | `findo [s/STATUS] [m/MEDICINE_NAME]...`<br> e.g., `findo s/cp m/pen`                                                                                                                            |
+| **Find Order**            | `findo [s/STATUS] [m/KEYWORD [MORE_KEYWORDS]…]`<br> e.g., `findo s/cp m/pen`                                                                                                                    |
 | **View Order**            | `viewo ORDER_NUMBER` <br> e.g., `viewo 12345`                                                                                                                                                   |
-| **Add Order**             | `addo INDEX o/ORDER_NUMBER m/MEDICINE_NAME [m/MEDICINE_NAME]...` <br> e.g., `addorder 3 o/438756 m/claritin`                                                                                    |
+| **Add Order**             | `addo INDEX o/ORDER_NUMBER m/MEDICINE_NAME [m/MEDICINE_NAME]…` <br> e.g., `addorder 3 o/438756 m/claritin`                                                                                      |
 | **Update Order Status**   | `updates INDEX s/STATUS`<br> e.g., `updates s/cancelled`                                                                                                                                        |
 | **Delete Order**          | `deleteo INDEX`<br> e.g., `deleteo 3`                                                                                                                                                           |
 | **List Medicine**         | `listm`                                                                                                                                                                                         |
-| **Find Medicine**         | `findm KEYWORD [MORE_KEYWORDS]`  <br/> e.g., `findm ol`                                                                                                                                         |
+| **Find Medicine**         | `findm KEYWORD [MORE_KEYWORDS]…`  <br/> e.g., `findm ol`                                                                                                                                        |
 | **Add Medicine**          | `addm m/MEDICINE_NAME`<br/> e.g., `addm m/panadol`                                                                                                                                              |
 | **Delete Medicine**       | `deletem INDEX` <br/> e.g., `deletem 1`                                                                                                                                                         |
-| **Add/Delete Short Form** | `sfm INDEX [m/SHORT_FORM] [d/]` <br/> e.g., `sfm 1 m/met`                                                                                                                                        |
+| **Add/Delete Short Form** | `sfm INDEX [m/SHORT_FORM] [d/]` <br/> e.g., `sfm 1 m/met`                                                                                                                                       |
 | **Undo**                  | `undo`                                                                                                                                                                                          |
 | **Redo**                  | `redo`                                                                                                                                                                                          |
 | **Clear**                 | `clear`                                                                                                                                                                                         |
